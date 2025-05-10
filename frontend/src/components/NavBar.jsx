@@ -30,9 +30,9 @@ const NavBar = () => {
     <>
       <Box 
       bg="#053774" 
+      position="fixed"
       p={4}
       color="white" 
-      position="fixed" 
       top="0" 
       left="0" 
       right="0"
