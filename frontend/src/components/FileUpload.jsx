@@ -1,4 +1,3 @@
-// FileUpload.jsx
 import React, { useRef } from "react";
 import { Box, Button } from "@chakra-ui/react";
 import { HiUpload, HiCamera } from "react-icons/hi";

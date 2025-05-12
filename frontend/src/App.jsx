@@ -6,19 +6,21 @@ import Home from './pages/Home';
 import Submit from './pages/Submit';
 import Data from './pages/Data';
 import Map from './pages/Map';
+import Results from "./pages/Results";
 
 function App() {
   return (
     <ChakraProvider>
-      <Router>
-        <NavBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/submit" element={<Submit />} />
-          <Route path="/data" element={<Data />} />
-          <Route path="/map" element={<Map />} />
-        </Routes>
-      </Router>
+        <Router>
+          <NavBar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/submit" element={<Submit />} />
+            <Route path="/data" element={<Data />} />
+            <Route path="/map" element={<Map />} />
+            <Route path="/results" element={<Results />} />
+          </Routes>
+        </Router>
     </ChakraProvider>
   );
 }
