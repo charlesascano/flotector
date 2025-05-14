@@ -4,7 +4,7 @@ import {
   Flex
 } from "@chakra-ui/react";
 
-export default function Home() {
+export default function Map() {
   return (
     <>
       <Box mt="72px">

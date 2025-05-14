@@ -40,8 +40,8 @@ export default function Submit() {
       const uploadPath = `Submissions/${uuid}`;
 
       // Extract EXIF metadata
-      const exifData = await exifr.gps(file);
-      const createdAt = exifData?.DateTimeOriginal || new Date().toISOString();
+      const exifData = await exifr.parse(file, { gps: true });
+      const createdAt = exifData?.DateTimeOriginal?.toLocaleString() || new Date().toLocaleString();
       const lat = exifData?.latitude || null;
       const lng = exifData?.longitude || null;
 
@@ -67,7 +67,7 @@ export default function Submit() {
         .insert([{
           id: uuid,
           created_at: createdAt,
-          uploaded_at: new Date().toISOString(),
+          uploaded_at: new Date().toLocaleString(),
           lat,
           lng,
           file_name: fileName,
@@ -84,7 +84,15 @@ export default function Submit() {
       if (!backendResponse.ok) throw new Error("Backend processing failed");
 
       const backendResult = await backendResponse.json();
-      console.log("Backend Response:", backendResult);
+      const resultUrl = backendResult.result_url;
+
+      //  Update the result_url in the database
+      const { error: updateError } = await supabase
+        .from('flotector-data')
+        .update({ result_url: resultUrl })
+        .eq('id', uuid);
+
+      if (updateError) throw updateError;
 
       handleClear();
       navigate("/results", { state: { uuid } }); // Navigate to results
@@ -101,7 +109,7 @@ export default function Submit() {
   return (
     <Box mt="72px">
       <VStack spacing={6} w="full" maxW={{ base: "90%", md: "600px" }} mx="auto" textAlign="center">
-        <Heading fontSize={{ base:"40px", sm: "50px", md: "60px" }} color="#15A33D" lineHeight="1" mt={7}>
+        <Heading fontSize={{ base:"40px", sm: "50px", md: "60px" }} color="#15A33D" lineHeight="1" mt={10}>
           GET INVOLVED!
         </Heading>
 
@@ -134,9 +142,14 @@ export default function Submit() {
 
           <Box display="flex" flexDirection="column" alignItems="center" w="full" px={4}>
             {file ? (
-              <Box p={1} fontWeight="semibold" fontSize="xs" color="#2457C5"
-              border="1px solid #2457C5" w="100%" textAlign="center">
-                {file.name}
+              <Box w="full">
+                <Box mb={2} fontWeight="bold" fontSize="xs" color="#2457C5">
+                  Selected file:
+                </Box>
+                <Box p={1} fontWeight="semibold" fontSize="xs" color="#2457C5"
+                border="1px solid #2457C5" w="100%" textAlign="center">
+                  {file.name}
+                </Box>
               </Box>
             ) : (
               <>

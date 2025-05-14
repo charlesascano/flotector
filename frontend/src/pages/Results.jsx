@@ -78,7 +78,7 @@ export default function Results() {
         mx="auto"
         w="100%"
         align="flex-start"
-        mt={4}
+        mt={5}
       >
         {/* Left Column */}
         <Box w={{ base: "100%", md: "45%" }} textAlign="center" px={{ base: 4, md: 6 }}>
