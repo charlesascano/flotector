@@ -78,5 +78,10 @@ def process_image(uid):
         'total_count': total_count
     }).eq('id', uid).execute()
 
-    # Just return a confirmation message that the process is done
-    return jsonify({"message": "Detection complete, your results are available."}), 200
+    # Get public URL of the uploaded image from 'Detections/' folder
+    storage = current_app.supabase.storage
+    file_path = f"Detections/{annotated_filename}.jpg"
+    result_url = storage.from_("flotector-media").get_public_url(file_path)
+
+    # Return the public URL of the annotated image
+    return jsonify({"result_url": result_url}), 200

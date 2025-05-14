@@ -62,11 +62,16 @@ const NavBar = () => {
           <DrawerBody>
             <VStack align="start" spacing={6} mt="80px">
               {navItems.map((item) => (
-                <RouterLink key={item.name} to={item.path}>
-                  <Link fontWeight="medium" fontSize="xl" onClick={onClose}>
-                    {item.name}
-                  </Link>
-                </RouterLink>
+                <Link
+                  as={RouterLink}
+                  key={item.name}
+                  to={item.path}
+                  fontWeight="medium"
+                  fontSize="xl"
+                  onClick={onClose}
+                >
+                  {item.name}
+                </Link>
               ))}
             </VStack>
           </DrawerBody>
