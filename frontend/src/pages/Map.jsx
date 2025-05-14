@@ -1,0 +1,19 @@
+import React from 'react';
+import {
+  Box,
+  Flex
+} from "@chakra-ui/react";
+
+export default function Home() {
+  return (
+    <>
+      <Box mt="72px">
+        <Flex>
+          <Box>
+           <h1>WASTE MAP PAGE</h1>
+         </Box>
+        </Flex>
+      </Box>
+    </>
+  );
+}
