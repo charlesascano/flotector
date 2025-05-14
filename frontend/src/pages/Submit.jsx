@@ -13,6 +13,7 @@ import Loading from "../components/Loading";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Layout from '../components/Layout';
 
 
 const Submission = () => {
@@ -51,69 +52,71 @@ const Submission = () => {
   };
 
   return (
-    <Box pt="72px" position="relative">
-      {/* Loading Overlay */}
-      {isLoading && (
-          <Loading
-            heading="Almost there!"
-            message="We're diving into your image to spot any floating waste and will have results for you in just a moment!"
-          />
-      )}
+    <Layout>
+      <Box pt="72px" position="relative">
+        {/* Loading Overlay */}
+        {isLoading && (
+            <Loading
+              heading="Almost there!"
+              message="We're diving into your image to spot any floating waste and will have results for you in just a moment!"
+            />
+        )}
 
-      {/* Main UI */}
-      <Center minH="40px" pt={{ base: "100px", md: "20px" }} bg="gray.50" p={4}>
-        <VStack spacing={6} w="full" maxW={{ base: "90%", md: "600px" }} mx="auto" textAlign="center">
-          <Heading as="h1" fontSize={{ base: "43px", sm: "43px", md: "64px" }} color="#15A33D">
-            GET INVOLVED!
-          </Heading>
+        {/* Main UI */}
+        <Center minH="40px" pt={{ base: "100px", md: "20px" }} bg="gray.50" p={4}>
+          <VStack spacing={6} w="full" maxW={{ base: "90%", md: "600px" }} mx="auto" textAlign="center">
+            <Heading as="h1" fontSize={{ base: "40px", sm: "43px", md: "64px" }} color="#15A33D">
+              GET INVOLVED!
+            </Heading>
 
-          <Text fontSize={{ base: "16px", sm: "md", md: "lg" }}fontWeight="medium" color="#053774" mt={-8}>
-            SPOT WASTE. SNAP IT. REPORT IT.
-          </Text>
+            <Text fontSize={{ base: "16px", sm: "md", md: "lg" }}fontWeight="medium" color="#053774" mt={-8}>
+              SPOT WASTE. SNAP IT. REPORT IT.
+            </Text>
 
-          {/* Dropzone */}
-          <Box
-            w="full"
-            border="2px dashed #0D0088"
-            borderRadius="md"
-            p={8}
-            bg="white"
-            cursor="pointer"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            flexDirection="column"
-          >
-            <HStack spacing={4}>
-              <FileUpload onFileSelect={(f) => setFile(f)} />
-              <FileUpload onFileSelect={(f) => setFile(f)} camera />
-            </HStack>
-          </Box>
+            {/* Dropzone */}
+            <Box
+              w="full"
+              border="2px dashed #0D0088"
+              borderRadius="md"
+              p={8}
+              bg="white"
+              cursor="pointer"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              flexDirection="column"
+            >
+              <HStack spacing={4}>
+                <FileUpload onFileSelect={(f) => setFile(f)} />
+                <FileUpload onFileSelect={(f) => setFile(f)} camera />
+              </HStack>
+            </Box>
 
-          <Button mt={-4} alignSelf="flex-end" size="sm" colorScheme="red" onClick={handleClear}>
-            CLEAR
-          </Button>
+            <Button mt={-4} alignSelf="flex-end" size="sm" colorScheme="red" onClick={handleClear}>
+              CLEAR
+            </Button>
 
-          <Text fontSize={{ base: "xs", sm: "sm", md: "md" }} color="#053774" px={2} align="center">
-            Your photo drives real action—upload your sighting of floating waste
-            in waterways now and make a difference.
-          </Text>
+            <Text fontSize={{ base: "xs", sm: "sm", md: "md" }} color="#053774" px={2} align="center">
+              Your photo drives real action—upload your sighting of floating waste
+              in waterways now and make a difference.
+            </Text>
 
-          <Button
-            color="white"
-            w="204px"
-            h="65px"
-            bg="#15A33D"
-            fontSize="24px"
-            fontWeight="bold"
-            onClick={handleSubmit}
-            _hover={{ bg: "#128B34" }}
-          >
-            SUBMIT NOW!
-          </Button>
-        </VStack>
-      </Center>
-    </Box>
+            <Button
+              color="white"
+              w="204px"
+              h="65px"
+              bg="#15A33D"
+              fontSize="24px"
+              fontWeight="bold"
+              onClick={handleSubmit}
+              _hover={{ bg: "#128B34" }}
+            >
+              SUBMIT NOW!
+            </Button>
+          </VStack>
+        </Center>
+      </Box>
+    </Layout>  
   );
 };
 

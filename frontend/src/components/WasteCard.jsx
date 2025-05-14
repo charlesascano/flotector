@@ -27,7 +27,7 @@ const WasteCard = ({ title, icon, description}) => {
         <Flex align="center" justify="space-between">
           <Flex align="center" gap={3}>
             <Icon as={icon} boxSize={6} color="#053774" />
-            <Text fontSize={{ base: "24px", sm: "24px", md: "24px" }} fontWeight="bold" color="#15A33D">
+            <Text fontSize={{ base: "20px", sm: "24px", md: "24px" }} fontWeight="bold" color="#15A33D">
               {title.toUpperCase()}
             </Text>
           </Flex>
