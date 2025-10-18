@@ -1,0 +1,28 @@
+# Python virtual environment
+.venv/
+backend/.venv/
+
+# Large model files
+*.pt
+
+# Common Python junk
+__pycache__/
+*.pyc
+
+# React/Vite frontend
+node_modules/
+dist/
+.vite/
+
+# Local environment variables (secrets)
+.env
+.env.*
+!.env.example
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS junk
+.DS_Store
