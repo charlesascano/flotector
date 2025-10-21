@@ -23,41 +23,53 @@ export default function Results() {
   const [classCount, setClassCount] = useState({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchResults = async () => {
-      try {
-        if (!uuid) return;
+const MOCK_MODE = true; // change to false to use real Supabase
 
-        // Get image public URL from Supabase Storage
-        const uuidStr = String(uuid);
-        const { data: urlData, error: urlError } = supabase
-          .storage
-          .from('flotector-media')
-          .getPublicUrl(`Detections/${uuidStr}-Annotated.jpg`);
-
-        if (urlError) throw urlError;
-        setImageUrl(urlData.publicUrl);
-
-        // Get class_count from Supabase DB
-        const { data, error: dbError } = await supabase
-          .from('flotector-data')
-          .select('class_count')
-          .eq('id', uuid)
-          .single();
-
-        if (dbError) throw dbError;
-        setClassCount(data.class_count || {});
-      } catch (error) {
-        console.error("Error loading results:", error.message);
-      } finally {
-        setLoading(false);
+useEffect(() => {
+  const fetchResults = async () => {
+    try {
+      if (MOCK_MODE) {
+        setImageUrl("https://via.placeholder.com/400x300.png?text=Test+Detection");
+        setClassCount({
+          plastic: 3,
+          paper: 1,
+          metal: 2,
+          glass: 1,
+          pile: 1,
+          textile: 1
+        });
+        return;
       }
-    };
 
-    fetchResults();
-  }, [uuid]);
+      if (!uuid) return;
 
-  const classOrder = ["plastic", "cardboard", "cigarette", "metal", "glass"];
+      const uuidStr = String(uuid);
+      const { data: urlData } = supabase
+        .storage
+        .from("flotector-media")
+        .getPublicUrl(`Detections/${uuidStr}-Annotated.jpg`);
+
+      setImageUrl(urlData.publicUrl);
+
+      const { data } = await supabase
+        .from("flotector-data")
+        .select("class_count")
+        .eq("id", uuid)
+        .single();
+
+      setClassCount(data.class_count || {});
+    } catch (error) {
+      console.error("Error loading results:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchResults();
+}, [uuid]);
+
+
+  const classOrder = ["plastic", "paper" ,"metal", "glass", "pile", "textile"];
 
   const renderWasteCards = () => {
     return classOrder
