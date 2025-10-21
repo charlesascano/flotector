@@ -23,24 +23,9 @@ export default function Results() {
   const [classCount, setClassCount] = useState({});
   const [loading, setLoading] = useState(true);
 
-const MOCK_MODE = true; // change to false to use real Supabase
-
 useEffect(() => {
   const fetchResults = async () => {
     try {
-      if (MOCK_MODE) {
-        setImageUrl("https://via.placeholder.com/400x300.png?text=Test+Detection");
-        setClassCount({
-          plastic: 3,
-          paper: 1,
-          metal: 2,
-          glass: 1,
-          pile: 1,
-          textile: 1
-        });
-        return;
-      }
-
       if (!uuid) return;
 
       const uuidStr = String(uuid);
