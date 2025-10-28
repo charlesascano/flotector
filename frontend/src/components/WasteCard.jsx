@@ -11,22 +11,6 @@ import {
 import { InfoIcon } from "@chakra-ui/icons";
 import { FaRecycle, FaBoxOpen, FaSmoking, FaCog, FaWineBottle, FaTshirt, FaTrash } from 'react-icons/fa';
 
-// Waste type definitions
-/*
-==== NEW WASTE TYPES (to be updated) ====
-Plastic
-Paper (kasama na dito cardboard)
-Metal
-Glass
-Pile
-Textile
-*/
-
-/*
-Plastics can harm marine life and take centuries to decompose. Always clean and dry them before recycling, and check if your local facility accepts that type.",
-  },
-
-*/
 const wasteTypes = [
   {
     title: "Plastic",
