@@ -10,7 +10,7 @@ const Hero = () => {
       backgroundSize="cover"
       backgroundPosition="center"
       width="100%"
-      height="265px"
+      height={{ base: "265px", md: "400px" }}
       color="white"
       p={8}
       display="flex"
@@ -18,17 +18,28 @@ const Hero = () => {
       justifyContent="center"
     >
  
-      <Flex justify="space-between" align="center">
-        <Box maxW="lg">
+      <Flex
+        direction="column"
+        align="center"
+        justify="center"
+        textAlign="center"
+        gap={4}
+      >
+        <Box>
           <Heading
-            fontSize={{ base: "4xl", sm: "4xl", md: "64px" }}
+            fontSize={{ base: "4xl", md: "64px" }}
             fontWeight="semibold"
             fontStyle="italic"
-            lineHeight="1.2"
+            lineHeight="1.1"
+            // this removes <br /> on desktop
+            display={{ base: "block", md: "inline" }}
           >
-            SPOT <br /> WASTE?
+            SPOT 
+            <Box as="span" display={{ base: "block", md: "inline" }}>
+              {" "}WASTE?
+            </Box>
           </Heading>
-          <Text fontSize={{ base: "16px", sm: "16px", md: "24px" }}>SNAP IT. REPORT IT.</Text>
+          <Text fontSize={{ base: "16px", md: "24px" }}>SNAP IT. REPORT IT.</Text>
         </Box>
 
         <Button
@@ -38,8 +49,9 @@ const Hero = () => {
           color="white"
           fontSize={["sm", "md", "xl"]}
           borderRadius="md"
-          p={[4, 5, 8]}
-          py={[4, 5, 8]} 
+          px={[6, 8, 10]}
+          py={[4, 5, 6]}
+          _hover={{ bg: "#0645a0" }}
         >
           SUBMIT NOW!
         </Button>
