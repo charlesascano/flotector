@@ -9,40 +9,45 @@ import {
   CardHeader,
 } from '@chakra-ui/react';
 import { InfoIcon } from "@chakra-ui/icons";
-import { FaRecycle, FaBoxOpen, FaSmoking, FaCog, FaWineBottle } from 'react-icons/fa';
+import { FaRecycle, FaBoxOpen, FaSmoking, FaCog, FaWineBottle, FaTshirt, FaTrash } from 'react-icons/fa';
 
-// Waste type definitions
 const wasteTypes = [
   {
     title: "Plastic",
     icon: FaRecycle,
     description:
-      "Plastic wastes harm the environment by polluting oceans and harming wildlife. Recycle only accepted types, and make sure items are clean and dry to avoid contamination.",
+      "Includes bottles, sachets, and containers. Rinse, dry, and place in recycling bins to reduce pollution.",
   },
   {
-    title: "Cardboard",
+    title: "Paper",
     icon: FaBoxOpen,
     description:
-      "Cardboard takes up significant space in landfills and contributes to waste. Flatten and keep it dry before recycling to conserve resources and avoid contamination.",
+      "Includes papers, boxes, and cartons. Keep them dry and flattened before paper recycling.",
   },
-  {
-    title: "Cigarette",
-    icon: FaSmoking,
-    description:
-      "Cigarette butts contain toxic chemicals that pollute water and soil. Dispose of them in designated waste containers to prevent harm to the environment.",
-  },
-  {
+    {
     title: "Metal",
     icon: FaCog,
     description:
-      "Metal objects can be recycled, reducing the need for raw materials and energy. Clean and sort metal items before recycling to ensure efficiency.",
+      "Includes cans, aluminum containers, and metal scraps. Clean and separate before sending for recycling.",
   },
-  {
+    {
     title: "Glass",
     icon: FaWineBottle,
     description:
-      "Glass takes thousands of years to break down in landfills. Recycling glass reduces waste and conserves resources. Ensure it is clean and free from contaminants before recycling.",
+      "Includes bottles, jars, and broken glass items. Clean them carefully and put them in glass-only bins. Handle with care to avoid injuries.",
   },
+    {
+    title: "Pile",
+    icon: FaTrash,
+    description:
+      "A mix of different kinds of trash, such as plastics, papers, and food waste. Sort and segregate properly before disposal.",
+  },
+    {
+    title: "Textile",
+    icon: FaTshirt,
+    description:
+      "Includes old clothes and fabrics. Donate or recycle instead of throwing away.",
+  }
 ];
 
 const WasteCard = ({ type }) => {

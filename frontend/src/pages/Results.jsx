@@ -51,7 +51,8 @@ export default function Results() {
     fetchResults();
   }, [uuid, toast]);
 
-  const classOrder = ["plastic", "cardboard", "cigarette", "metal", "glass"];
+
+  const classOrder = ["plastic", "paper" ,"metal", "glass", "pile", "textile"];
 
   const renderWasteCards = () => {
     return classOrder

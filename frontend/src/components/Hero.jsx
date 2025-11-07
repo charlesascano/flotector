@@ -1,34 +1,40 @@
 import React from 'react';
 import { Box, Button, Heading, Text, Flex } from '@chakra-ui/react';
-import { Link as RouterLink} from "react-router-dom";
+import { Link as RouterLink } from 'react-router-dom';
 import img from '../assets/hero-bg.png';
 
 const Hero = () => {
   return (
     <Box
-      bgImage={img}
-      backgroundSize="cover"
-      backgroundPosition="center"
-      width="100%"
-      height="265px"
+      bgImage={`url(${img})`}
+      bgSize="cover"
+      bgPos="center"
+      w="100%"
+      minH={{ base: '400px', md: '450px', lg: '520px' }}
       color="white"
-      p={8}
       display="flex"
       flexDirection="column"
       justifyContent="center"
+      textAlign="center"
+      px={{ base: 6, md: 12 }}
+      py={{ base: 10, md: 16 }}
     >
- 
-      <Flex justify="space-between" align="center">
-        <Box maxW="lg">
+      <Flex direction="column" align="center" gap={4}>
+        <Box>
           <Heading
-            fontSize={{ base: "4xl", sm: "4xl", md: "64px" }}
+            fontSize={{ base: '3xl', md: '5xl', lg: '64px' }}
             fontWeight="semibold"
             fontStyle="italic"
-            lineHeight="1.2"
+            lineHeight="1.1"
+            display={{ base: 'block', md: 'inline' }}
           >
-            SPOT <br /> WASTE?
+            SPOT
+            <Box as="span" display={{ base: 'block', md: 'inline' }}>
+              {' '}WASTE?
+            </Box>
           </Heading>
-          <Text fontSize={{ base: "16px", sm: "16px", md: "24px" }}>SNAP IT. REPORT IT.</Text>
+
+          <Text fontSize={{ base: 'md', md: 'xl' }}>SNAP IT. REPORT IT.</Text>
         </Box>
 
         <Button
@@ -36,20 +42,24 @@ const Hero = () => {
           to="/Submit"
           bg="#053774"
           color="white"
-          fontSize={["sm", "md", "xl"]}
+          fontSize={{ base: 'sm', md: 'lg', lg: 'xl' }}
           borderRadius="md"
-          p={[4, 5, 8]}
-          py={[4, 5, 8]} 
+          px={{ base: 6, md: 10 }}
+          py={{ base: 4, md: 6 }}
+          _hover={{ bg: '#0645a0' }}
         >
           SUBMIT NOW!
         </Button>
-      </Flex>
 
-      <Box textAlign="center">
-        <Text mt={8} fontSize={{ base: "10px", sm: "10px", md: "15px" }}>
+        <Text
+          mt={6}
+          fontSize={{ base: 'xs', md: 'sm', lg: 'md' }}
+          maxW="md"
+          mx="auto"
+        >
           Help monitor and manage river waste — One Photo at a Time.
         </Text>
-      </Box>
+      </Flex>
     </Box>
   );
 };
