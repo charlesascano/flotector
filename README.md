@@ -1,25 +1,32 @@
 # flotector
 
-HOW TO RUN
+HOW TO RUN (DEVELOPERS ONLY)
 
-1. Install packages into .venv (make sure to activate .venv so packages won't be installed in your system Python)
-    - 'cd backend' in terminal
-    - '.venv/Scripts/activate' in terminal
-    - 'pip install -r requirements.txt' in terminal
+For first time:
+1. Install backend packages
+    - 'cd backend' to go to backend folder
+    - 'python -m venv .venv' to create virtual environment
+    - '.venv/Scripts/activate' to activate virtual environment
+    - 'pip install -r requirements.txt' to install (This takes a while)
 
-2. Open split terminal to run Backend and Frontend simultaneously 
+2. Create file under backend named ".env" and input API keys
 
-3. Setup for Backend
-    - in VS Code, Ctrl + Shift + P
-    - Select 'Python: Select Interpreter'
-    - Enter '.\backend\.venv\Scripts\python.exe'
+3. Install frontend packages
+    - 'cd ..' to go to root folder
+    - 'cd frontend' to go to frontend folder
+    - 'npm install' to install
 
-    - 'cd backend' in terminal
-    - 'python run.py' in terminal
+Run web app
+1. Open Split Terminal to run Backend and Frontend simultaneously 
+
+2. Run backend
+    - 'cd backend'
+    - '.venv/Scripts/activate' (if .venv is not yet activated)
+    - 'python run.py'
     - Ctrl + C to quit
 
-4. Setup Frontend
-    - 'cd frontend' in terminal
-    - 'npm run dev' in terminal
+3. Run frontend
+    - 'cd frontend'
+    - 'npm run dev'
     - Ctrl + Click on the local server link
     - Ctrl + C to quit
