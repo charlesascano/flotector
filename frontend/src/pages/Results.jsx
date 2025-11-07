@@ -23,41 +23,38 @@ export default function Results() {
   const [classCount, setClassCount] = useState({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchResults = async () => {
-      try {
-        if (!uuid) return;
+useEffect(() => {
+  const fetchResults = async () => {
+    try {
+      if (!uuid) return;
 
-        // Get image public URL from Supabase Storage
-        const uuidStr = String(uuid);
-        const { data: urlData, error: urlError } = supabase
-          .storage
-          .from('flotector-media')
-          .getPublicUrl(`Detections/${uuidStr}-Annotated.jpg`);
+      const uuidStr = String(uuid);
+      const { data: urlData } = supabase
+        .storage
+        .from("flotector-media")
+        .getPublicUrl(`Detections/${uuidStr}-Annotated.jpg`);
 
-        if (urlError) throw urlError;
-        setImageUrl(urlData.publicUrl);
+      setImageUrl(urlData.publicUrl);
 
-        // Get class_count from Supabase DB
-        const { data, error: dbError } = await supabase
-          .from('flotector-data')
-          .select('class_count')
-          .eq('id', uuid)
-          .single();
+      const { data } = await supabase
+        .from("flotector-data")
+        .select("class_count")
+        .eq("id", uuid)
+        .single();
 
-        if (dbError) throw dbError;
-        setClassCount(data.class_count || {});
-      } catch (error) {
-        console.error("Error loading results:", error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+      setClassCount(data.class_count || {});
+    } catch (error) {
+      console.error("Error loading results:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchResults();
-  }, [uuid]);
+  fetchResults();
+}, [uuid]);
 
-  const classOrder = ["plastic", "cardboard", "cigarette", "metal", "glass"];
+
+  const classOrder = ["plastic", "paper" ,"metal", "glass", "pile", "textile"];
 
   const renderWasteCards = () => {
     return classOrder
