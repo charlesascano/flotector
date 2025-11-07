@@ -7,7 +7,14 @@ const Layout = ({ children }) => {
   return (
     <Flex direction="column" minH="100vh">
       <NavBar />
-      <Box flex="1">{children}</Box>
+
+      {/* Spacer to push content below fixed navbar */}
+      <Box h={{ base: '64px', md: '72px' }} flexShrink={0} />
+
+      <Box as="main" flex="1">
+        {children}
+      </Box>
+
       <Footer />
     </Flex>
   );

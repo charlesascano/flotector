@@ -8,10 +8,8 @@ export default function Home() {
   return (
     <>
     <Layout>
-      <VStack spacing={0} pt="72px" align="stretch">
-        <Hero />
-        <HowItWorks />
-      </VStack>
+      <Hero />
+      <HowItWorks />
     </Layout>
     </>
   );
