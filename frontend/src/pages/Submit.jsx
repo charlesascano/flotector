@@ -1,16 +1,8 @@
-import {
-  Box,
-  Heading,
-  Button,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
-import img from '../assets/add-image.svg';
-import { useRef, useState } from 'react';
-import { supabase } from '../lib/supabase';
-import exifr from 'exifr';
-import { v4 as uuidv4 } from 'uuid';
+import { Box, Heading, Button, Text, VStack, useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { useRef, useState } from 'react';
+import exifr from 'exifr';
+import Dropbox from '../components/Dropbox';
 import Loading from "../components/Loading";
 import Layout from '../components/Layout';
 
@@ -18,94 +10,103 @@ export default function Submit() {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef(null);
+  const toast = useToast();
   const navigate = useNavigate();
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-  
+  const handleFileChange = (e) => setFile(e.target.files[0]);
+
   const handleClear = () => {
     setFile(null);
     if (inputRef.current) inputRef.current.value = null;
   };
 
   const handleSubmit = async () => {
-    if (!file) return alert("Please select a file.");
+    if (!file) {
+      toast({
+        title: "No file selected",
+        description: "Please select an image file to submit.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return; // Stop the function if no file
+    }
 
     setLoading(true); // Show loading
 
     try {
-      // Generate UUID and get file name
-      const fileName = file.name;
-      const uuid = uuidv4();
-      const uploadPath = `Submissions/${uuid}`;
-
-      // Extract EXIF metadata
+      // 1. Extract EXIF metadata
       const exifData = await exifr.parse(file, { gps: true });
-      const createdAt = exifData?.DateTimeOriginal?.toLocaleString() || new Date().toLocaleString();
       const lat = exifData?.latitude || null;
       const lng = exifData?.longitude || null;
+      const createdAt = exifData?.DateTimeOriginal?.toISOString() || null;
 
-      // Upload image to Supabase Storage
-      const { data: uploadData, error: uploadError } = await supabase
-        .storage
-        .from('flotector-media')
-        .upload(uploadPath, file);
-        console.log("Uploaded image to Storage");
+      // Handle error if no GPS data
+      if (!lat || !lng) {
+        throw new Error("Image has no location data. Please turn on location tags in your device's camera settings.");
+      }
+      
+      // Handle error if no date
+      if (!createdAt) {
+        throw new Error("Image has no creation date. Please ensure your device's date and time are set correctly.");
+      }
+      
+      // 2. Create FormData to send file and metadata to backend
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('createdAt', createdAt);
+      formData.append('lat', lat);
+      formData.append('lng', lng);
+      formData.append('fileName', file.name);
 
-      if (uploadError) throw uploadError;
-
-      // Get image URL from Supabase Storage to insert into the database
-      const { data: publicUrlData } = supabase
-        .storage
-        .from('flotector-media')
-        .getPublicUrl(uploadPath);
-        console.log("Uploaded image to database");
-
-      const imageUrl = publicUrlData?.publicUrl;
-
-      // Insert metadata into Supabase table
-      const { error: insertError } = await supabase
-        .from('flotector-data')
-        .insert([{
-          id: uuid,
-          created_at: createdAt,
-          uploaded_at: new Date().toLocaleString(),
-          lat,
-          lng,
-          file_name: fileName,
-          image_url: imageUrl,
-          result_url: null
-        }]);
-
-      if (insertError) throw insertError;
-
-      const backendResponse = await fetch(`http://localhost:5000/process/${uuid}`, {
-        method: 'POST'
+      // 3. Send FormData to the backend
+      const response = await fetch(`http://localhost:5000/api/submit`, {
+        method: 'POST',
+        body: formData, 
       });
 
-      if (!backendResponse.ok) throw new Error("Backend processing failed");
+      // Handle backend logic errors
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || `Server responded with status: ${response.status}`);
+      }
 
-      const backendResult = await backendResponse.json();
-      const resultUrl = backendResult.result_url;
-      console.log("Detection finished. Uploading results to database");
+      // 4. Get final results from the backend
+      const result = await response.json();
+      const newUuid = result.uuid;
 
-      //  Update the result_url in the database
-      const { error: updateError } = await supabase
-        .from('flotector-data')
-        .update({ result_url: resultUrl })
-        .eq('id', uuid);
-        console.log("Uploaded result to database");
-
-      if (updateError) throw updateError;
-
+      // 5. Navigate to results page with UUID of the submission
       handleClear();
-      navigate("/results", { state: { uuid } }); // Navigate to results
+      toast({
+        title: "Upload Successful!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+      navigate(`/results/${newUuid}`);
 
     } catch (err) {
-      console.error("Upload failed:", err);
-      alert("Upload failed. Check the console for details.");
-      setLoading(false); // Remove loading
+      console.error("Upload failed:", err); 
+      
+      let errorMessage = err.message;
+
+      // Handle network errors (cannot reach backend server)
+      if (err instanceof TypeError) {
+        errorMessage = "Network error: Could not reach the server. Please check your connection.";
+      }
+      
+      // Toast for errors
+      toast({
+        title: "Upload Failed",
+        description: errorMessage,
+        status: "error",
+        duration: 6000,
+        isClosable: true,
+        position: "top-right",
+      });
+      setLoading(false); // Hide loading screen
     }
   };
 
@@ -124,52 +125,11 @@ export default function Submit() {
         </Text>
         
         {/* Dropzone */}
-        <Box
-          w="full"
-          border="2px dashed #0D0088"
-          borderRadius="2xl"
-          pt="50px" pb="50px"
-          bg="white"
-          cursor="pointer"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          flexDirection="column"
-          onClick={() => document.getElementById('fileInput').click()}
-        >
-          <input
-            ref={inputRef}
-            id="fileInput"
-            type="file"
-            accept="image/png, image/jpeg"
-            hidden
-            onChange={handleFileChange}
-          />
-
-          <Box display="flex" flexDirection="column" alignItems="center" w="full" px={4}>
-            {file ? (
-              <Box w="full">
-                <Box mb={2} fontWeight="bold" fontSize="xs" color="#2457C5">
-                  Selected file:
-                </Box>
-                <Box p={1} fontWeight="semibold" fontSize="xs" color="#2457C5"
-                border="1px solid #2457C5" w="100%" textAlign="center">
-                  {file.name}
-                </Box>
-              </Box>
-            ) : (
-              <>
-                <img src={img} width="36" height="36" alt="upload icon" />
-                <Box mt={2} fontWeight="bold" fontSize="2xs" color="#2457C5">
-                  Upload your photo here
-                </Box>
-                <Box fontSize="2xs" color="#2457C5">
-                  .png, .jpg up to 50MB
-                </Box>
-              </>
-            )}
-          </Box>
-        </Box>
+        <Dropbox
+          inputRef={inputRef}
+          file={file}
+          onFileChange={handleFileChange}
+        />
 
         {/* Clear Btn */}
         <Button

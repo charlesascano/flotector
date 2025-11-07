@@ -1,4 +1,3 @@
-import React from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
@@ -17,7 +16,7 @@ function App() {
             <Route path="/submit" element={<Submit />} />
             <Route path="/data" element={<Data />} />
             <Route path="/map" element={<Map />} />
-            <Route path="/results" element={<Results />} />
+            <Route path="/results/:uuid" element={<Results />} />
           </Routes>
         </Router>
     </ChakraProvider>

@@ -1,57 +1,55 @@
-import {
-  Box,
-  Flex,
-  Text,
-  Image,
-  Heading,
-  HStack,
-  Button,
-  SimpleGrid,
-  Spinner,
-} from "@chakra-ui/react";
-import { Link as RouterLink, useLocation } from "react-router-dom";
-import WasteCard from "../components/WasteCard";
+import {  Box, Flex, Text, Image, Heading, HStack, Button,  SimpleGrid, Spinner, useToast } from "@chakra-ui/react";
+import { Link as RouterLink, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
+import WasteCard from "../components/WasteCard";
 import Layout from '../components/Layout';
 
 export default function Results() {
-  const location = useLocation();
-  const { uuid } = location.state || {};
+  const { uuid } = useParams();
 
   const [imageUrl, setImageUrl] = useState(null);
   const [classCount, setClassCount] = useState({});
   const [loading, setLoading] = useState(true);
+  const toast = useToast();
 
-useEffect(() => {
-  const fetchResults = async () => {
-    try {
-      if (!uuid) return;
+  useEffect(() => {
+    const fetchResults = async () => {
+      try {
+        if (!uuid) {
+          throw new Error("No submission ID provided.");
+        }
 
-      const uuidStr = String(uuid);
-      const { data: urlData } = supabase
-        .storage
-        .from("flotector-media")
-        .getPublicUrl(`Detections/${uuidStr}-Annotated.jpg`);
+        // Fetch data from backend
+        const response = await fetch(`http://localhost:5000/api/results/${uuid}`);
 
-      setImageUrl(urlData.publicUrl);
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.error || "Failed to fetch results from server.");
+        }
 
-      const { data } = await supabase
-        .from("flotector-data")
-        .select("class_count")
-        .eq("id", uuid)
-        .single();
+        const data = await response.json();
 
-      setClassCount(data.class_count || {});
-    } catch (error) {
-      console.error("Error loading results:", error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+        // Set results state with the data from backend
+        setImageUrl(data.result_url);
+        setClassCount(data.class_count || {});
 
-  fetchResults();
-}, [uuid]);
+      } catch (error) {
+        console.error("Error loading results:", error.message);
+        toast({
+          title: "Error loading results",
+          description: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchResults();
+  }, [uuid, toast]);
 
 
   const classOrder = ["plastic", "paper" ,"metal", "glass", "pile", "textile"];
@@ -88,9 +86,9 @@ useEffect(() => {
             Thanks for helping keep our waters clean.
           </Text>
 
-          <Box mx="auto" mb={2}>
+          <Box mx="auto" mb={2} minH="200px" display="flex" alignItems="center" justifyContent="center">
             {loading ? (
-              <Spinner size="lg" />
+              <Spinner size="xl" color="#15A33D" mx="auto" />
             ) : (
               <Image
                 src={imageUrl}
@@ -99,6 +97,7 @@ useEffect(() => {
                 mx="auto"
                 w={{ base: "100%", md: "120%" }}
                 maxW="400px"
+                fallback={<Spinner size="xl" color="#15A33D" />}
               />
             )}
           </Box>
@@ -127,7 +126,11 @@ useEffect(() => {
             FLOATING WASTE DETECTED:
           </Heading>
           <SimpleGrid minChildWidth="250px" spacing={4} w="100%" mb={3}>
-            {loading ? <Spinner /> : renderWasteCards()}
+            {loading ? (
+              <Spinner size="xl" color="#064CA1" mx="auto" />
+            ) : (
+              renderWasteCards()
+            )}
           </SimpleGrid>
         </Box>
       </Flex>
