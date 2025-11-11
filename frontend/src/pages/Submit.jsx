@@ -1,9 +1,10 @@
-import { Box, Heading, Button, Text, VStack, useToast } from "@chakra-ui/react";
+import { Box, Heading, Button, Text, VStack, useToast, Link } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState } from 'react';
 import exifr from 'exifr';
 import Dropbox from '../components/Dropbox';
 import Loading from "../components/Loading";
+import UploadHelper from "../components/UploadHelper";
 import Layout from '../components/Layout';
 
 export default function Submit() {
@@ -114,15 +115,23 @@ export default function Submit() {
 
   return (
     <Layout>
-    <Box mt="72px" mb="100px">
-      <VStack spacing={6} w="full" maxW={{ base: "90%", md: "600px" }} mx="auto" textAlign="center">
-        <Heading fontSize={{ base:"40px", sm: "50px", md: "60px" }} color="#15A33D" lineHeight="1" mt={10}>
+    <Box 
+      bgGradient="linear(to-b,#053774, white)" //gradient background
+      pt="72px"
+      pb={{ base: 8, md: 16 }} 
+      px={{ base: 4, md: 0 }}
+      >
+
+      {/* --- UPLOADER BOX --- */}
+      <VStack spacing={6} w="full" maxW={{ base: "90%", md: "600px" }} mx="auto" textAlign="center" bg="white"    border="1px solid" borderColor="rgba(0,0,0,0.1)" borderRadius="xl" p={{ base: 4, md: 8 }} boxShadow="lg">
+
+        <Heading fontSize={{ base:"36px", sm: "50px", md: "60px" }} color="#15A33D" lineHeight="1" mt={10}>
           GET INVOLVED!
         </Heading>
 
-        <Text fontSize={{ base: "16px", sm: "md", md: "lg" }} color="#053774" mt={-5}>
-          SPOT WASTE. SNAP IT. SUBMIT IT.
-        </Text>
+        <Text fontSize={{ base: "sm", sm: "md", md: "lg" }} color="#053774" mt={-5}>
+            SPOT WASTE. SNAP IT. SUBMIT IT.
+          </Text>
         
         {/* Dropzone */}
         <Dropbox
@@ -143,12 +152,23 @@ export default function Submit() {
           CLEAR
         </Button>
 
-        <Text fontSize={{ base: "xs", sm: "sm", md: "md" }}
-          color="#053774"
-          px={2}>
-          Your photo drives real action — upload your sighting of floating waste
-          in waterways now and make a difference.
-        </Text>
+        <Text
+            fontSize={{ base: 'xs', sm: 'sm', md: 'md' }}
+            color="#053774"
+            px={2}
+          >
+              Your photo and location data are used only for detecting and mapping floating
+              waste. By submitting, you agree to our{' '}
+              <Link
+                href="#" // placeholder only
+                onClick={(e) => e.preventDefault()} // prevents page jump
+                fontWeight="bold"
+                textDecoration="underline"
+                whiteSpace="nowrap"
+              >
+                Privacy Policy
+              </Link>
+          </Text>
         
         {/* Submit Btn */}
         <Button
@@ -156,7 +176,7 @@ export default function Submit() {
           w="204px"
           h="65px"
           bg="#15A33D"
-          fontSize="24px"
+          fontSize={{ base: "20px", md: "24px" }}
           fontWeight="bold"
           onClick={handleSubmit}
           _hover={{ bg: '#128B34' }}
@@ -165,6 +185,13 @@ export default function Submit() {
         </Button>
       </VStack>
     </Box>
+
+    {/* --- Upload Helper (Accordion) --- */}
+      <UploadHelper 
+        w="full" 
+        maxW={{ base: "90%", md: "600px" }}
+        mx="auto" 
+        />
     </Layout>
   );
 }
