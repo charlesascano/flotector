@@ -1,4 +1,4 @@
-import { Box, Heading, Button, Text, VStack, useToast, Link } from "@chakra-ui/react";
+import { Box, Heading, Button, Text, VStack, useToast, Link, useDisclosure } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState } from 'react';
 import exifr from 'exifr';
@@ -6,6 +6,7 @@ import Dropbox from '../components/Dropbox';
 import Loading from "../components/Loading";
 import UploadHelper from "../components/UploadHelper";
 import Layout from '../components/Layout';
+import PrivacyPolicy from "../components/PrivacyPolicy";
 
 export default function Submit() {
   const [file, setFile] = useState(null);
@@ -20,6 +21,8 @@ export default function Submit() {
     setFile(null);
     if (inputRef.current) inputRef.current.value = null;
   };
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleSubmit = async () => {
     if (!file) {
@@ -161,7 +164,7 @@ export default function Submit() {
               waste. By submitting, you agree to our{' '}
               <Link
                 href="#" // placeholder only
-                onClick={(e) => e.preventDefault()} // prevents page jump
+                onClick={onOpen}
                 fontWeight="bold"
                 textDecoration="underline"
                 whiteSpace="nowrap"
@@ -185,6 +188,8 @@ export default function Submit() {
         </Button>
       </VStack>
     </Box>
+
+   <PrivacyPolicy isOpen={isOpen} onClose={onClose} />
 
     {/* --- Upload Helper (Accordion) --- */}
       <UploadHelper 
