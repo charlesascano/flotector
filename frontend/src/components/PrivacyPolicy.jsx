@@ -85,15 +85,11 @@ const PrivacyPolicy = ({isOpen, onClose}) => {
                 </Text>
                 <UnorderedList spacing={2} mb={6} ml={6}>
                     <ListItem>
-                    <b>Research Team:</b> Data is accessible to the student
-                    researcher(s) and academic supervisor(s) directly involved in this
-                    project.
-                    </ListItem>
-                    <ListItem>
-                    <b>Open-Source Dataset:</b> To benefit the wider research
-                    community, we may publish the anonymized dataset of images (with all
-                    identifying metadata removed). This dataset would be provided to
-                    other researchers for non-commercial, academic use only.
+                        <b>Public Map and Table:</b> All submitted data (including the
+                        <b> photo</b>, its <b>location</b>, and the <b>date it was taken</b>) will
+                        be made publicly visible on our website's map and in a data table. This
+                        is essential for the project's goal of creating an accessible
+                        database of waste hotspots.
                     </ListItem>
                 </UnorderedList>
 
