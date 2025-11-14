@@ -19,12 +19,16 @@ const PrivacyPolicy = ({isOpen, onClose}) => {
       <Modal isOpen={isOpen} onClose={onClose} size={'xl'} >
         <ModalOverlay  />
         <ModalContent >
+
             <ModalHeader>Privacy Policy</ModalHeader>
             <ModalCloseButton />
+
             <ModalBody>
+
                 <Heading as="h4" size="sm" mb={2}>
                     1. What Information Do We Collect?
                 </Heading>
+
                 <Text mb={3}>
                     We collect <b>only three types</b> of information:
                 </Text>
@@ -120,6 +124,7 @@ const PrivacyPolicy = ({isOpen, onClose}) => {
                     We may update this policy in the future, for example, if the scope of
                     the research changes. Any updates will be posted on this page.
                 </Text>
+
             </ModalBody>
 
             <ModalFooter>
@@ -127,6 +132,7 @@ const PrivacyPolicy = ({isOpen, onClose}) => {
                 OK
               </Button>
             </ModalFooter>
+
           </ModalContent>
       </ Modal>
     );
