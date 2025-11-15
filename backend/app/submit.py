@@ -1,21 +1,19 @@
 from flask import Blueprint, request, jsonify, current_app
 from PIL import Image, ImageOps
 import cv2
-import io
-import requests
 from ultralytics import YOLO
 from .load_model import load_model
 import uuid
 from datetime import datetime
 
-bp = Blueprint('routes', __name__)
+# Define a new blueprint for 'submit'
+submit_bp = Blueprint('submit', __name__, url_prefix='/api')
 
 # Load YOLO model once
 load_model()
 model = YOLO('./model/best.pt')
 
-# Submit API Route.
-@bp.route('/api/submit', methods=['POST'])
+@submit_bp.route('/submit', methods=['POST'])
 def submit_and_process():
     try:
         # 1. Get file and form data from the frontend
@@ -117,26 +115,4 @@ def submit_and_process():
 
     except Exception as e:
         print(f"An error occurred: {e}") # Print error to backend console
-        return jsonify({"error": str(e)}), 500
-
-# Results API Route.
-@bp.route('/api/results/<uuid>', methods=['GET'])
-def get_results(uuid):
-    try:
-        # 1. Query the database for the matching ID
-        response = current_app.supabase.table('flotector-data') \
-            .select('result_url', 'class_count') \
-            .eq('id', uuid) \
-            .single() \
-            .execute()
-
-        # 2. Check if data was found
-        if not response.data:
-            return jsonify({"error": "Results not found"}), 404
-        
-        # 3. Return the data to the frontend
-        return jsonify(response.data), 200
-
-    except Exception as e:
-        print(f"An error occurred fetching results: {e}")
         return jsonify({"error": str(e)}), 500
