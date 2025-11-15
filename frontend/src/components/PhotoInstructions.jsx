@@ -12,7 +12,6 @@ import {
   OrderedList,
   ListItem,
   Image,
-  Flex,
   Grid,
   GridItem
 } from "@chakra-ui/react";
