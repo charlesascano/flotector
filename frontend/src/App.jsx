@@ -5,6 +5,7 @@ import Submit from './pages/Submit';
 import Data from './pages/Data';
 import Map from './pages/Map';
 import Results from "./pages/Results";
+import Dashboard from "./pages/Dashboard";
 import theme from './lib/theme';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <Route path="/data" element={<Data />} />
             <Route path="/map" element={<Map />} />
             <Route path="/results/:uuid" element={<Results />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </Router>
     </ChakraProvider>
