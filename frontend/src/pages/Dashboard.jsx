@@ -3,6 +3,11 @@ import { VStack, HStack, Text, Button, useBreakpointValue } from "@chakra-ui/rea
 import { FiRefreshCw } from "react-icons/fi";
 import Layout from '../components/Layout';
 import KeyMetrics from '../components/dashboard/KeyMetrics';
+import SubmissionsGraph from '../components/dashboard/SubmissionsGraph';
+import WasteTypeChart from '../components/dashboard/WasteTypeChart';
+import LocationHotspots from '../components/dashboard/LocationHotspots';
+import WasteAnalytics from '../components/dashboard/WasteAnalytics';
+
 
 export default function Dashboard() {
   const headingFontSize = useBreakpointValue({ base: "32px", md: "64px" });
@@ -54,6 +59,7 @@ export default function Dashboard() {
         </HStack>
 
         <KeyMetrics />
+        <WasteAnalytics />
       </VStack>
     </Layout>
   );
