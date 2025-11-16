@@ -9,7 +9,7 @@ For first time:
     - '.venv/Scripts/activate' to activate virtual environment
     - 'pip install -r requirements.txt' to install (This takes a while)
 
-2. Create file under backend named ".env" and input API keys
+2. Create file under backend folder named ".env" and input API keys (ask from team leader)
 
 3. Install frontend packages
     - 'cd ..' to go to root folder

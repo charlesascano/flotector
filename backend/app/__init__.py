@@ -15,8 +15,14 @@ def create_app():
     supabase_key = os.getenv("SUPABASE_KEY")
     app.supabase = create_client(supabase_url, supabase_key)
 
-    with app.app_context():
-        from .routes import bp  # Import the Blueprint, not just the view
-        app.register_blueprint(bp)  # Register Blueprint properly
+    # Import blueprints
+    from .submit import submit_bp
+    from .results import results_bp
+    from .data import data_bp
+
+    # Register your blueprints
+    app.register_blueprint(submit_bp)
+    app.register_blueprint(results_bp)
+    app.register_blueprint(data_bp)
 
     return app

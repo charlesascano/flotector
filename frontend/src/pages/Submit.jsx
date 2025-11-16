@@ -90,7 +90,7 @@ export default function Submit() {
         isClosable: true,
         position: "top-right",
       });
-      navigate(`/results/${newUuid}`);
+      navigate(`/results/${newUuid}`, { state: { from: 'submit' } });
 
     } catch (err) {
       console.error("Upload failed:", err); 
