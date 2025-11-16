@@ -206,9 +206,15 @@ export default function LocationHotspots() {
       </h3>
 
       {/* Description */}
-      <p className="chart-subtitle">
+      <Text
+        as="p"
+        fontsize="sm"
+        fontStyle="italic"
+        color="#053774"
+        mb="2"
+        className="chart-subtitle">
         Click a city to view its top barangays.
-      </p>
+      </Text>
 
       <Flex direction={{ base: 'column', md: 'row' }} gap={8} align="flex-start" mt={4}>
         {/* Left Chart */}
