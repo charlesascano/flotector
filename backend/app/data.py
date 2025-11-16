@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify, current_app, request
 
-# Define a new blueprint for 'data'
 data_bp = Blueprint('data', __name__, url_prefix='/api')
 
 @data_bp.route('/data', methods=['GET'])

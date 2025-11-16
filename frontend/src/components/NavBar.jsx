@@ -1,17 +1,4 @@
-import {
-  Box,
-  Flex,
-  IconButton,
-  useDisclosure,
-  Drawer,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  DrawerHeader,
-  DrawerBody,
-  VStack,
-  Link,
-} from "@chakra-ui/react";
+import { Box, Flex, IconButton, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerBody, VStack, Link } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { Link as RouterLink} from "react-router-dom";
 
@@ -20,7 +7,8 @@ const NavBar = () => {
 
   const navItems = [
     { name: "HOME", path: "/" },
-    { name: "GET INVOLVED", path: "/submit" },
+    { name: "SUBMIT PHOTO", path: "/submit" },
+    { name: "DASHBOARD", path: "/dashboard" },
     { name: "OPEN DATA", path: "/data" },
     { name: "WASTE MAP", path: "/map" },
     { name: "ABOUT", path: "/" },

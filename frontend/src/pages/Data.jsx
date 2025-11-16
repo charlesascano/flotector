@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, Box, Flex, Heading, Text, Button, HStack, useToast } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Table, Thead, Tbody, Tr, Th, Td, Box, Flex, Heading, Text, Button, useToast, Menu, MenuButton, MenuList, MenuItem, IconButton } from '@chakra-ui/react';
+import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
+import { useLocation, Link as RouterLink } from 'react-router-dom';
 import Layout from '../components/Layout';
 
 export default function OpenData() {
   const [flotectorData, setFlotectorData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const toast = useToast(); // Initialize the toast hook
+  const toast = useToast();
+  const location = useLocation();
   
-  const LIMIT = 10; // Number of items per page
+  const LIMIT = 10; // Entry limit per page
+  const totalPages = Math.ceil(totalCount / LIMIT);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        // Fetch from your new backend endpoint
         const response = await fetch(
           `http://localhost:5000/api/data?page=${currentPage}&limit=${LIMIT}`
         );
@@ -30,7 +32,6 @@ export default function OpenData() {
 
       } catch (error) {
         console.error('Error fetching data:', error);
-        // Toast error notification
         toast({
           title: "Error fetching data",
           description: error.message || "Could not fetch data from the server.",
@@ -43,9 +44,8 @@ export default function OpenData() {
     }
 
     fetchData();
-  }, [currentPage, toast]); // Add toast to dependency array
+  }, [currentPage, toast]);
 
-  // Helper function to format the class_count object
   const formatClassCount = (classCount) => {
     if (!classCount || Object.keys(classCount).length === 0) {
       return "None";
@@ -55,97 +55,12 @@ export default function OpenData() {
       .join(', ');
   };
 
-  // Helper function to format lat/lng
   const formatLocation = (lat, lng) => {
     if (lat == null || lng == null) {
       return "No location";
     }
     return `${parseFloat(lat).toFixed(4)}, ${parseFloat(lng).toFixed(4)}`;
   };
-
-  const totalPages = Math.ceil(totalCount / LIMIT);
-
-  // --- PAGINATION RENDER LOGIC ---
-  const renderPageNumbers = () => {
-    const pageButtons = [];
-
-    // Case 1: Total pages 5 or less
-    if (totalPages <= 5) {
-      for (let i = 1; i <= totalPages; i++) {
-        pageButtons.push(
-          <Button
-            key={i}
-            onClick={() => setCurrentPage(i)}
-            variant={currentPage === i ? 'solid' : 'outline'}
-            bg={currentPage === i ? '#15A33D' : 'transparent'}
-            color={currentPage === i ? 'white' : 'gray.700'}
-            _hover={{ bg: currentPage === i ? '#129836' : '#E2E8F0' }}
-          >
-            {i}
-          </Button>
-        );
-      }
-      return pageButtons;
-    }
-
-    // Case 2: Total pages more than 5 (truncated style)
-    const pagesToShow = 5;
-    let startPage = Math.max(1, currentPage - Math.floor(pagesToShow / 2));
-    let endPage = startPage + pagesToShow - 1;
-
-    // Adjust if we are near the end
-    if (endPage > totalPages) {
-      endPage = totalPages;
-      startPage = Math.max(1, endPage - pagesToShow + 1);
-    }
-    
-    // Always show first page
-    if (startPage > 1) {
-      pageButtons.push(
-        <Button key={1} onClick={() => setCurrentPage(1)} variant="outline">
-          1
-        </Button>
-      );
-    }
-    
-    // Show ellipsis if there's a gap
-    if (startPage > 2) {
-      pageButtons.push(<Text key="start-ellipsis">...</Text>);
-    }
-
-    // Show the dynamic window of pages
-    for (let i = startPage; i <= endPage; i++) {
-      pageButtons.push(
-        <Button
-          key={i}
-          onClick={() => setCurrentPage(i)}
-          variant={currentPage === i ? 'solid' : 'outline'}
-          bg={currentPage === i ? '#15A33D' : 'transparent'}
-          color={currentPage === i ? 'white' : 'gray.700'}
-          _hover={{ bg: currentPage === i ? '#129836' : '#E2E8F0' }}
-        >
-          {i}
-        </Button>
-      );
-    }
-
-    // Show ellipsis if there's a gap
-    if (endPage < totalPages - 1) {
-      pageButtons.push(<Text key="end-ellipsis">...</Text>);
-    }
-    
-    // Always show last page
-    if (endPage < totalPages) {
-      pageButtons.push(
-        <Button key={totalPages} onClick={() => setCurrentPage(totalPages)} variant="outline">
-          {totalPages}
-        </Button>
-      );
-    }
-
-    return pageButtons;
-  };
-  // --- END NEW PAGINATION LOGIC ---
 
   return (
     <Layout>
@@ -159,33 +74,55 @@ export default function OpenData() {
             ALL SUBMISSIONS ({totalCount})
           </Text>
 
-          <Box w="100vw" overflowX="auto" p={5}>
+          <Box w="100%" maxW="100vw" p={{ base: 1, md: 5 }}>
             <Table
               variant="simple"
               size="sm"
               w="100%"
-              sx={{
-                th: { border: "1px solid", borderColor: "gray.300", bgColor: "#15A33D", textColor: "white", p: 3 },
-                td: { border: "1px solid", borderColor: "gray.300", p: 3 },
-                "tr:nth-of-type(even)": { bg: "gray.100" },
-              }}
+              sx={{ tableLayout: "fixed" }} 
             >
               <Thead>
                 <Tr>
-                  <Th>Detected Wastes</Th>
-                  <Th>Date</Th>
-                  <Th>Location</Th>
-                  <Th>Results</Th>
+                  <Th width="30%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" p={3}>
+                    Detected Wastes
+                  </Th>
+                  <Th width="20%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" p={3}>
+                    Date
+                  </Th>
+                  <Th width="25%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" p={3}>
+                    Location
+                  </Th>
+                  <Th width="25%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" p={3}>
+                    Results
+                  </Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {flotectorData.map((entry) => (
-                  <Tr key={entry.id}>
-                    <Td>{formatClassCount(entry.class_count)}</Td>
-                    <Td>{new Date(entry.uploaded_at).toLocaleDateString()}</Td>
-                    <Td>{formatLocation(entry.lat, entry.lng)}</Td>
-                    <Td>
-                      <Text as={RouterLink} to={`/results/${entry.id}`} color="teal.500" fontWeight="bold">
+                  <Tr key={entry.id} bg="even:gray.100">
+                    <Td 
+                        border="1px solid" 
+                        borderColor="gray.300" 
+                        p={{ base: 1, md: 3 }} 
+                        whiteSpace="normal" 
+                        wordBreak="break-word"
+                    >
+                        {formatClassCount(entry.class_count)}
+                    </Td>
+                    <Td border="1px solid" borderColor="gray.300" p={{ base: 1, md: 3 }} whiteSpace="normal">
+                        {new Date(entry.uploaded_at).toLocaleDateString()}
+                    </Td>
+                    <Td border="1px solid" borderColor="gray.300" p={{ base: 1, md: 3 }} whiteSpace="normal">
+                        {formatLocation(entry.lat, entry.lng)}
+                    </Td>
+                    <Td border="1px solid" borderColor="gray.300" p={{ base: 1, md: 3 }}>
+                      <Text
+                        as={RouterLink}
+                        to={`/results/${entry.id}`}
+                        state={{ background: location }}
+                        color="teal.500"
+                        fontSize={{ base: "xs", md: "md" }}
+                      >
                         View Results
                       </Text>
                     </Td>
@@ -197,23 +134,49 @@ export default function OpenData() {
 
           {/* --- PAGINATION UI --- */}
           <Flex justify="center" align="center" mt={4} pb={8}>
-            <Button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              isDisabled={currentPage === 1}
-              mr={2}
-            >
-              Previous
-            </Button>
-            <HStack>
-              {renderPageNumbers()}
-            </HStack>
-            <Button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              isDisabled={currentPage === totalPages || totalCount === 0}
-              ml={2}
-            >
-              Next
-            </Button>
+              
+              {/* Previous Button */}
+              <IconButton
+                  icon={<ArrowBackIcon />}
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  isDisabled={currentPage === 1}
+                  aria-label="Previous Page"
+                  variant="outline"
+                  mr={2}
+              />
+
+              {/* Page Selector Dropdown */}
+              <Menu>
+                <MenuButton 
+                  as={Button}
+                  variant="outline"
+                  minW="120px"
+                >
+                  Page {currentPage} of {totalPages}
+                </MenuButton>
+                <MenuList maxH="200px" overflowY="auto">
+                  {Array.from({ length: totalPages || 1 }, (_, i) => i + 1).map((page) => (
+                    <MenuItem 
+                      key={page} 
+                      onClick={() => setCurrentPage(page)}
+                      bg={currentPage === page ? 'gray.100' : 'transparent'}
+                      fontWeight={currentPage === page ? 'bold' : 'normal'}
+                    >
+                      Page {page}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
+
+              {/* Next Button */}
+              <IconButton
+                  icon={<ArrowForwardIcon />}
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  isDisabled={currentPage === totalPages || totalCount === 0}
+                  aria-label="Next Page"
+                  variant="outline"
+                  ml={2}
+              />
           </Flex>
           {/* --- END PAGINATION UI --- */}
 

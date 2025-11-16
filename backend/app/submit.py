@@ -6,7 +6,6 @@ from .load_model import load_model
 import uuid
 from datetime import datetime
 
-# Define a new blueprint for 'submit'
 submit_bp = Blueprint('submit', __name__, url_prefix='/api')
 
 # Load YOLO model once
