@@ -7,9 +7,10 @@ import {
   Collapse,
   useDisclosure,
   CardHeader,
+  Box
 } from '@chakra-ui/react';
 import { InfoIcon } from "@chakra-ui/icons";
-import { FaRecycle, FaBoxOpen, FaSmoking, FaCog, FaWineBottle, FaTshirt, FaTrash } from 'react-icons/fa';
+import { FaRecycle, FaBoxOpen, FaCog, FaWineBottle, FaTshirt, FaTrash } from 'react-icons/fa';
 
 const wasteTypes = [
   {
@@ -50,7 +51,7 @@ const wasteTypes = [
   }
 ];
 
-const WasteCard = ({ type }) => {
+const WasteCard = ({ type, count }) => {
   const { isOpen, onToggle } = useDisclosure();
 
   const data = wasteTypes.find(waste => waste.title.toLowerCase() === type.toLowerCase());
@@ -69,11 +70,13 @@ const WasteCard = ({ type }) => {
     >
       <CardHeader p={3}>
         <Flex align="center" justify="space-between">
-          <Flex align="center" gap={4}>
+          <Flex align="center" gap={4} >
             <Icon as={data.icon} boxSize={6} color="#053774" />
-            <Text fontSize={{ base: "20px", sm: "20px", md: "20px" }} fontWeight="bold" color="#15A33D">
-              {data.title.toUpperCase()}
-            </Text>
+            <Box position={"relative"}>
+              <Text fontSize={{ base: "20px", sm: "20px", md: "20px" }} fontWeight="bold" color="#15A33D">
+                {data.title.toUpperCase()} - {count}
+              </Text>
+            </Box>
           </Flex>
           <Icon as={InfoIcon} color="#053774" />
         </Flex>
