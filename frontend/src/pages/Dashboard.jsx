@@ -58,7 +58,6 @@ export default function Dashboard() {
         <KeyMetrics />
         <WasteAnalytics />
         <RecentSubmissions />
-        
       </VStack>
     </Layout>
   );
