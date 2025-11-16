@@ -2,10 +2,10 @@ import { Box,
         Flex,
         Heading, 
         Text, 
-        SimpleGrid, 
         Button, 
         Icon, 
-        VStack } from "@chakra-ui/react";
+        Grid, 
+        GridItem} from "@chakra-ui/react";
 
 // Bottle Icon (example static icon, you can map dynamically later)
 // Current waste types (on Results.jsx): const classOrder = ["plastic", "paper" ,"metal", "glass", "pile", "textile"];
@@ -28,7 +28,7 @@ const BottleIcon = (props) => (
   - top hotspot text
   - top hotspots total reports value
   */}
-
+// h={{base: "300px", md: "400px"}}
 const KeyMetrics = ({ overallDetection, totalSubmissions, wasteType, topHotspot, icons }) => (
   <Box w="100%" p={{ base: 4, md: 8 }} bg="#F6F6F6" borderRadius="20px" borderBottom="1px solid #C2C2C2">
 
@@ -37,91 +37,96 @@ const KeyMetrics = ({ overallDetection, totalSubmissions, wasteType, topHotspot,
       Key Metrics
     </Heading>
 
-    <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 4, md: 6 }}>
-
+    <Grid gap={3} templateColumns={{base: "repeat(4, 1fr)", md: "repeat(5, 1fr)"}} spacing={{ base: 4, md: 6 }}>
       {/* BIG CARD: Overall Detection */}
-      <Flex
-        direction="column"
-        justify="center"
-        align="center"
+      <GridItem
         p={{ base: 6, sm: 7, md: 8 }}
         bgGradient="linear(330deg, white -220%, #053774 100%)"
         boxShadow="0px 4px 4px rgba(0,0,0,0.25)"
         borderRadius="35px"
         color="white"
-        w="100%"
-        minH={{ base: "200px", md: "auto" }}
+        rowSpan={{base: 1, md: 2}}
+        colSpan={{base: 4,md: 1}}
+        display={"flex"}
+        flexDirection={"column"}
+        justifyContent={"space-between"}
       >
-        <Text fontWeight="700" fontSize={{ base: "lg", sm: "xl", md: "24px" }}>OVERALL DETECTION</Text>
-        <Text fontWeight="700" fontSize={{ base: "5rem", sm: "6rem", md: "180px" }} textAlign="center" lineHeight="1.1" mt={{ base: 4, md: 2 }}>
-
+        <Text fontWeight="700" fontSize={{ base: "calc(16px + 0.7vw)"}}>OVERALL DETECTION</Text>
+        <Text fontWeight="700" fontSize={{ base:"calc(64px + 1vw)" }} textAlign="right" lineHeight="1.1" mt={{ base: 4, md: 2 }}>
 
           {/* overall detection value: REPLACE with dynamic value */}
           {overallDetection || 0}
         </Text>
-      </Flex>
+      </GridItem>
 
-      {/* RIGHT SIDE CARDS */}
-      <VStack spacing={{ base: 4, md: 6 }} w="100%">
-        <SimpleGrid columns={{ base: 2, md: 2 }} spacing={{ base: 3, md: 6 }} w="100%">
-          {/* CARD 2: Total Image Submissions */}
+        {/* CARD 2: Total Image Submissions */}
+        <GridItem
+          display={"flex"}
+          justifyContent={"space-between"}
+          alignItems="center"
+          p={{ base: 4, sm: 5, md: 6 }}
+          bgGradient="linear(158deg, #15A33D 0%, #EFEFEF 200%)"
+          boxShadow="0px 4px 4px rgba(0,0,0,0.25)"
+          borderRadius="35px"
+          color="white"
+          gap={1}
+          flexWrap={"wrap"}
+          colSpan={2}
+        >
+          <Text fontWeight="700" fontSize={{ base: "calc(8px + 1vw)" }} lineHeight="1.2" >
+            TOTAL IMAGE<br/>SUBMISSIONS
+          </Text>
+
+          <Text fontWeight="700" fontSize={{ base: "3.5rem", sm: "4rem", md: "64px" }} lineHeight="1" textAlign={"right"} w={{base: "100%", lg:"fit-content"}}>
+            {/* total image submissions value: REPLACE with dynamic value */}
+            {totalSubmissions || 0}
+          </Text>
+        </GridItem>
+
+        {/* CARD 3: Top Waste Type */}
+        <GridItem
+          display={"flex"}
+          p={{ base: 4, sm: 5, md: 6 }}
+          bgGradient="linear(149deg, #15A33D 0%, #EFEFEF 200%)"
+          boxShadow="0px 4px 4px rgba(0,0,0,0.25)"
+          borderRadius="35px"
+          color="white"
+          justifyContent={{base: "center", md:"space-between"}}
+          gap={2}
+          alignItems={"center"}
+          colSpan={2}
+          flexWrap={{base: "wrap", md: "nowrap"}}
+        >
           <Flex
-            direction="column"
-            justify="center"
-            align="center"
-            p={{ base: 4, sm: 5, md: 6 }}
-            bgGradient="linear(158deg, #15A33D 0%, #EFEFEF 200%)"
-            boxShadow="0px 4px 4px rgba(0,0,0,0.25)"
-            borderRadius="35px"
-            color="white"
-            minH={{ base: "170px", md: "auto" }}
-            textAlign="center"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems={{base: "center",md:"start"}}
+            textAlign={{base: "center", md:"left"}}
+            h={{base:"fit-content", md:"100%"}}
           >
-            <Text fontWeight="700" fontSize={{ base: "sm", sm: "md", md: "xl" }} lineHeight="1.2" mb={2}>
-              TOTAL IMAGE SUBMISSIONS
-            </Text>
+            <Text fontSize={{ base: "calc(6px + 0.5vw)" }} fontWeight="500" >TOP WASTE TYPE</Text>
 
-            <Text fontWeight="700" fontSize={{ base: "3.5rem", sm: "4rem", md: "128px" }} lineHeight="1">
-              {/* total image submissions value: REPLACE with dynamic value */}
-              {totalSubmissions || 0}
-            </Text>
-          </Flex>
-
-          {/* CARD 3: Top Waste Type */}
-          <Flex
-            direction="column"
-            justify="center"
-            align="center"
-            p={{ base: 4, sm: 5, md: 6 }}
-            bgGradient="linear(149deg, #15A33D 0%, #EFEFEF 200%)"
-            boxShadow="0px 4px 4px rgba(0,0,0,0.25)"
-            borderRadius="35px"
-            color="white"
-            minH={{ base: "170px", md: "auto" }}
-            textAlign="center"
-          >
-            <Text fontSize={{ base: "sm", sm: "md", md: "lg" }} fontWeight="500">TOP WASTE TYPE</Text>
-
-            {/* top waste type icon: PLACE icon dynamically from icons object using wasteType (or however you do) */}
-            {icons?.[wasteType] || <BottleIcon boxSize={{ base: 10, sm: 12, md: 24 }} my={1} />}
-
-            <Text fontWeight="700" fontSize={{ base: "xl", sm: "2xl", md: "4xl" }} lineHeight="1.1">
+            <Box>
+            <Text fontWeight="700" fontSize={{ base: "calc(16px + 1vw)" }} lineHeight="1.1">
 
               {/* top waste type text: REPLACE with dynamic waste type */}
               {wasteType?.toUpperCase() || "PLASTIC"}
             </Text>
-
             <Text fontSize={{ base: "10px", sm: "xs" }} pt={1} lineHeight="1.1">
               represents <Text as="span" fontWeight="700">{/* top waste type percentage: REPLACE Dynamic percentage */}80%</Text> of detections
             </Text>
+            </Box>
           </Flex>
-        </SimpleGrid>
+          {/* top waste type icon: PLACE icon dynamically from icons object using wasteType (or however you do) */}
+          {icons?.[wasteType] || <BottleIcon boxSize={{ base: 10, sm: 12, md: 16, lg:24 }}/>}
+
+
+        </GridItem>
 
         {/* BOTTOM WIDE CARD: Top Hotspot */}
-        <Flex
-          direction="column"
-          justify="center"
-          align="center"
+        <GridItem
+          display={"flex"}
+          alignItems="center"
           p={{ base: 5, sm: 6, md: 6 }}
           w="100%"
           bgGradient="linear(150deg, white 24%, #053774 270%)"
@@ -129,38 +134,42 @@ const KeyMetrics = ({ overallDetection, totalSubmissions, wasteType, topHotspot,
           borderRadius="35px"
           border="1px solid #DCDCDC"
           textAlign="center"
+          colSpan={4}
+          gap={4}
+          flexWrap={"wrap"}
         >
-          <VStack align="center" spacing={1} flex="1">
-            <Text color="#5D5D5D" fontSize={{ base: "sm", sm: "md", md: "lg" }} fontWeight="500">
+          <Flex direction={"column"} textAlign={"left"} flex="1" minW={"200px"}>
+            <Text color="#5D5D5D" fontSize={{ base: "calc(8px + 0.3vw)" }} fontWeight="500">
               TOP HOTSPOT
             </Text>
-            <Text fontWeight="700" fontSize={{ base: "xl", sm: "2xl", md: "4xl" }} color="#053774" lineHeight="1.1">
-              {/* top hotspot text: REPLACE with dynamic value */}
-              {topHotspot?.name || "BRGY. NAME"}
-            </Text>
+            <Box>
+              <Text fontWeight="700" fontSize={{ base: "calc(16px + 0.5vw)" }} color="#053774">
+                {/* top hotspot text: REPLACE with dynamic value */}
+                {topHotspot?.name || "BRGY. NAME"}
+              </Text>
 
-            {/* top hotspots total reports value: REPLACE with dynamic value */}
-            <Text fontSize={{ base: "xs", sm: "sm" }} pt={1} color="#053774">
-              is the most reported area with <Text as="span" fontWeight="700">{topHotspot?.reports || 0}</Text> reports
-            </Text>
-          </VStack>
+              {/* top hotspots total reports value: REPLACE with dynamic value */}
+              <Text fontSize={{ base: "calc(8px + 0.5vw)" }} color="#053774">
+                is the most reported area with <Text as="span" fontWeight="700">{topHotspot?.reports || 0}</Text> reports
+              </Text>
+            </Box>
+          </Flex>
 
           <Button
             bg="#053774"
             color="white"
             fontWeight="700"
             borderRadius="6px"
-            fontSize={{ base: "sm", md: "md" }}
+            fontSize={{ base: "calc(8px + 0.7vw)" }}
             p={{ base: 4, md: 5 }}
             px={{ base: 6, sm: 8 }}
-            mt={4}
             _hover={{ bg: "#042e61" }}
+            marginLeft={"auto"}
           >
             View Details
           </Button>
-        </Flex>
-      </VStack>
-    </SimpleGrid>
+        </GridItem>
+    </Grid>
   </Box>
 );
 
