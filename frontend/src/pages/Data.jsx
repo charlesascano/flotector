@@ -14,6 +14,15 @@ export default function OpenData() {
   const LIMIT = 10; // Entry limit per page
   const totalPages = Math.ceil(totalCount / LIMIT);
 
+  const textStyles = {
+    fontSize: "calc(8px + 0.5vw)",
+  }
+  const headerText = {
+    fontSize: "calc(6px + 1vw)",
+    letterSpacing: "0px",
+    textAlign: "center"
+  }
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -83,16 +92,16 @@ export default function OpenData() {
             >
               <Thead>
                 <Tr>
-                  <Th width="30%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" p={3}>
+                  <Th width="30%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" sx={headerText}>
                     Detected Wastes
                   </Th>
-                  <Th width="20%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" p={3}>
+                  <Th width="20%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" sx={headerText}>
                     Date
                   </Th>
-                  <Th width="25%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" p={3}>
+                  <Th width="25%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" sx={headerText}>
                     Location
                   </Th>
-                  <Th width="25%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" p={3}>
+                  <Th width="25%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" sx={headerText}>
                     Results
                   </Th>
                 </Tr>
@@ -103,25 +112,25 @@ export default function OpenData() {
                     <Td 
                         border="1px solid" 
                         borderColor="gray.300" 
-                        p={{ base: 1, md: 3 }} 
+                        sx={textStyles}
                         whiteSpace="normal" 
                         wordBreak="break-word"
                     >
                         {formatClassCount(entry.class_count)}
                     </Td>
-                    <Td border="1px solid" borderColor="gray.300" p={{ base: 1, md: 3 }} whiteSpace="normal">
+                    <Td border="1px solid" borderColor="gray.300" sx={textStyles} whiteSpace="normal" textAlign={"right"}>
                         {new Date(entry.uploaded_at).toLocaleDateString()}
                     </Td>
-                    <Td border="1px solid" borderColor="gray.300" p={{ base: 1, md: 3 }} whiteSpace="normal">
+                    <Td border="1px solid" borderColor="gray.300" sx={textStyles} whiteSpace="normal">
                         {formatLocation(entry.lat, entry.lng)}
                     </Td>
-                    <Td border="1px solid" borderColor="gray.300" p={{ base: 1, md: 3 }}>
+                    <Td border="1px solid" borderColor="gray.300" sx={textStyles} textAlign={"center"}>
                       <Text
                         as={RouterLink}
                         to={`/results/${entry.id}`}
                         state={{ background: location }}
                         color="teal.500"
-                        fontSize={{ base: "xs", md: "md" }}
+                        // fontSize={{ base: "xs", md: "md" }}
                       >
                         View Results
                       </Text>
