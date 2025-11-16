@@ -19,7 +19,7 @@ const BriefOverview = () => (
       color="#053774"
       mb={6}
     >
-      Imus River Overview
+      Imus River
     </Heading>
 
     <Text
