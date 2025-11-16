@@ -73,7 +73,21 @@ export default function Results({ isOverlay = false }) {
           key.toLowerCase().replace(/\s/g, '').includes(normalizedType)
         );
       })
-      .map(type => <WasteCard key={type} type={type} />);
+      .map(type => {
+        // 1. Re-calculate normalized type
+        const normalizedType = type.toLowerCase().replace(/\s/g, '');
+        
+        // 2. Find the actual key from the API data that matched
+        const matchedKey = Object.keys(classCount).find(key => 
+          key.toLowerCase().replace(/\s/g, '').includes(normalizedType)
+        );
+
+        // 3. Get the count (default to 0 just in case)
+        const countValue = matchedKey ? classCount[matchedKey] : 0;
+
+        // 4. Pass 'count' as a prop
+        return <WasteCard key={type} type={type} count={countValue} />;
+      });
   };
 
   // Results Content
