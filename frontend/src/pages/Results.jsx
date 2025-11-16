@@ -20,7 +20,7 @@ export default function Results() {
         }
 
         // Fetch data from backend
-        const response = await fetch(`http://localhost:5000/api/results/${uuid}`);
+        const response = await fetch(`http://72.60.194.14/api/results/${uuid}`);
 
         if (!response.ok) {
           const err = await response.json();
@@ -78,11 +78,11 @@ export default function Results() {
         mt={5}
       >
         {/* Left Column */}
-        <Box w={{ base: "100%", md: "45%" }} textAlign="center" px={{ base: 4, md: 6 }}>
-          <Heading fontSize={{ base: "40px", md: "60px" }} color="#15A33D" mb={2} mt={2}>
+        <Box w={{ base: "100%", md: "45%" }} display={"flex"} textAlign={"center"} alignItems={"center"} flexDirection={"column"} px={{ base: 4, md: 6 }}>
+          <Heading fontSize={{ base: "40px", md: "calc(40px + 1.5vw)" }} color="#15A33D" mb={2} mt={2} whiteSpace={"nowrap"}>
             ALL DONE!
           </Heading>
-          <Text fontSize={{ base: "14px", md: "md" }} color="#053774" mb={4} mt={-2}>
+          <Text fontSize={{ base: "14px", md: "calc(14px + 0.1vw)" }} color="#053774" mb={4} mt={-2}>
             Thanks for helping keep our waters clean.
           </Text>
 
@@ -115,6 +115,7 @@ export default function Results() {
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
+          flexShrink={0}
         >
           <Heading
             fontSize={{ base: "16px", md: "lg" }}
@@ -125,7 +126,7 @@ export default function Results() {
           >
             FLOATING WASTE DETECTED:
           </Heading>
-          <SimpleGrid minChildWidth="250px" spacing={4} w="100%" mb={3}>
+          <SimpleGrid spacing={4} w="100%" mb={3} justifyItems={"center"}>
             {loading ? (
               <Spinner size="xl" color="#064CA1" mx="auto" />
             ) : (
