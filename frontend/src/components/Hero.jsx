@@ -1,12 +1,14 @@
 import React from 'react';
 import { Box, Button, Heading, Text, Flex } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
-import img from '../assets/hero-bg.png';
+// import img from '../assets/hero-bg.png';
+import img from '../assets/PXL3.webp' // change to PXL, PXL2, or PXL3
 
 const Hero = () => {
   return (
     <Box
-      bgImage={`url(${img})`}
+      // bgImage={`url(${img})`}
+      bgImage={`linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${img})`}
       bgSize="cover"
       bgPos="center"
       w="100%"
