@@ -62,7 +62,7 @@ const WasteCard = ({ type }) => {
       variant="outline"
       borderColor="#0a2760"
       borderRadius="md"
-      w="100%"
+      w="80%"
       onClick={onToggle}
       cursor="pointer"
       _hover={{ boxShadow: "md" }}

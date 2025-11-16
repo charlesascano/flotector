@@ -7,6 +7,7 @@ import Loading from "../components/Loading";
 import UploadHelper from "../components/UploadHelper";
 import Layout from '../components/Layout';
 import PrivacyPolicy from "../components/PrivacyPolicy";
+import PhotoInstructions from "../components/PhotoInstructions";
 
 export default function Submit() {
   const [file, setFile] = useState(null);
@@ -196,7 +197,12 @@ export default function Submit() {
         w="full" 
         maxW={{ base: "90%", md: "600px" }}
         mx="auto" 
-        />
+      />
+      <PhotoInstructions 
+        w="full" 
+        maxW={{ base: "90%", md: "600px" }}
+        mx="auto" 
+      />
     </Layout>
   );
 }

@@ -114,7 +114,7 @@ export default function Results({ isOverlay = false }) {
             DETECTIONS
           </Heading>
           <Text fontSize={{ base: "14px", md: "calc(14px + 0.1vw)" }} color="#053774" mb={4} mt={-2}>
-            Thanks for helping monitor our environment!
+            Thanks for helping monitor our waters!
           </Text>
 
           <Box mx="auto" mb={2} minH="200px" display="flex" alignItems="center" justifyContent="center">
