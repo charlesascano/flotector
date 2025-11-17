@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, useColorModeValue } from '@chakra-ui/react';
 
-// Import the new section components
 import AboutHero from '../components/about/AboutHero';
 import Purpose from '../components/about/AboutPurpose';
 import Background from '../components/about/AboutBackground';
