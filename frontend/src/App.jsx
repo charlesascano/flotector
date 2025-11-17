@@ -6,7 +6,7 @@ import Data from './pages/Data';
 import Map from './pages/Map';
 import Results from "./pages/Results";
 import Dashboard from "./pages/Dashboard";
-import theme from './lib/theme';
+import theme from './theme/theme';
 
 function AppContent() {
   const location = useLocation();
