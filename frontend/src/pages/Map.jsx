@@ -39,7 +39,7 @@ export default function MapPage() {
   const FilterMenu = () => (
     <Box
       position="absolute"
-      top="200px"
+      top="30px"
       right="20px" // Position top-right
       left="auto"  // Reset left
       transform="none" // Reset center transform
