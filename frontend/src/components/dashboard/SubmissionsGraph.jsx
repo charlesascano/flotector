@@ -33,11 +33,9 @@ function SubmissionsGraph({ data = lineChartData }) {
   const yMax = Math.ceil((maxValue * 1.1) / 10) * 10;
 
   return (
-    <div className="chart-card-container">
-      <h2 className="chart-title">Submissions over time</h2>
-
-      <div style={{ width: '100%', height: '300px' }}>
-        <ResponsiveContainer>
+    <>
+      <h2 className="chart-title" style={{fontSize: "calc(8px + 1vw)"}}>Submissions over time</h2>
+        <ResponsiveContainer >
           <LineChart
             data={data}
             margin={{ top: 20, right: 30, left: 0, bottom: 10 }}
@@ -70,8 +68,7 @@ function SubmissionsGraph({ data = lineChartData }) {
             />
           </LineChart>
         </ResponsiveContainer>
-      </div>
-    </div>
+    </>
   );
 }
 
