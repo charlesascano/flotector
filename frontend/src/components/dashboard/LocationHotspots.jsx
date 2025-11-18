@@ -111,6 +111,18 @@ const COLOR_SELECTED = '#15A33D';
 const COLOR_LIGHT = '#A3A3A3';
 const COLOR_DARK = '#5D5D5D';
 
+/* ---------------- Barangay List Styles ---------------- */
+const brgyHeader = {
+  fontSize:{base: "calc(10px + 1vw)", md: "calc(14px + 0.5vw)"},
+  fontWeight: 700,
+  textTransform: 'uppercase',
+  as: 'span'
+}
+
+const brgyTable = {
+  fontSize:{base: "calc(6px + 1vw)", md: "calc(8px + 0.5vw)"}
+}
+
 /* ---------------- Barangay List ---------------- */
 function TopBarangayList({ city }) {
   const rows = [...city.topBarangays].sort((a, b) => b.reports - a.reports);
@@ -124,22 +136,16 @@ function TopBarangayList({ city }) {
     >
       <Box mb="10px">
         <Text
-          as="span"
+          sx={brgyHeader}
           color="#5D5D5D"
-          fontSize="20px"
-          fontWeight="700"
-          textTransform="uppercase"
           letterSpacing="1px"
           mr="0.5em"
         >
           Top 5 Barangays
         </Text>
         <Text
-          as="span"
+          sx={brgyHeader}
           color="#15A33D"
-          fontSize="20px"
-          fontWeight="700"
-          textTransform="uppercase"
         >
           in {city.name}
         </Text>
@@ -149,12 +155,12 @@ function TopBarangayList({ city }) {
         <Table variant="unstyled" size="sm">
           <Thead>
             <Tr borderBottom="1px solid" borderColor="gray.200">
-              <Th color="#737373" fontSize="14px" fontWeight="700" pl="0">
+              <Th sx={brgyTable} color="#737373" fontWeight="700" pl="0">
                 Barangay
               </Th>
               <Th
+                sx={brgyTable} 
                 color="#737373"
-                fontSize="14px"
                 fontWeight="700"
                 textAlign="right"
                 pr="0"
@@ -167,10 +173,10 @@ function TopBarangayList({ city }) {
           <Tbody>
             {rows.map((b) => (
               <Tr key={b.name}>
-                <Td color="#404040" fontSize="14px" pl="0">
+                <Td sx={brgyTable} color="#404040" pl="0">
                   {b.name}
                 </Td>
-                <Td color="#0A0A0A" fontSize="14px" fontWeight="700" textAlign="right">
+                <Td sx={brgyTable} color="#0A0A0A" fontWeight="700" textAlign="right">
                   {b.reports}
                 </Td>
               </Tr>

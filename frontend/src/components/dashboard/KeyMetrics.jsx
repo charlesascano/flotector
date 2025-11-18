@@ -60,13 +60,14 @@ const KeyMetrics = ({ overallDetection, totalSubmissions, wasteType, topHotspot,
         </Text>
       </GridItem>
 
+      {/* made this the parent container of chart instead of '.chart-card-container' to take advantage of chakra responsiveness*/}
       <GridItem
         colSpan={{base: 1, md: 3}}
         rowSpan={{base: 2, md: 1}}
         borderRadius={"12px"}
         bgColor={"white"}
         padding={"1.5rem"}
-        pb={"3rem"}
+        pb={{base: "calc(1.5rem + 2.5vw)"}}
         boxShadow={"0px 4px 4px rgba(0, 0, 0, 0.25)"}
         border={"1px solid #C2C2C2"}
         height={{md:"400px"}}

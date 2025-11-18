@@ -38,7 +38,8 @@ function SubmissionsGraph({ data = lineChartData }) {
         <ResponsiveContainer >
           <LineChart
             data={data}
-            margin={{ top: 20, right: 30, left: 0, bottom: 10 }}
+            // margin={{ top: 20, right: 30, left: 0, bottom: 10 }}
+            margin={{ top: 0, right: 0, left: -30, bottom: 10 }}
           >
             <XAxis
               dataKey="name"
