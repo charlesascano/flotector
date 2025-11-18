@@ -49,6 +49,7 @@ const KeyMetrics = ({ overallDetection, totalSubmissions, wasteType, topHotspot,
         display={"flex"}
         flexDirection={"column"}
         justifyContent={"space-between"}
+        maxH={"200px"}
       >
         <Text fontWeight="700" fontSize={{ base: "calc(8px + 1vw)" }} lineHeight="1.2" >
           TOTAL IMAGE<br/>SUBMISSIONS
