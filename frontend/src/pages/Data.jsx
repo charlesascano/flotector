@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, Box, Flex, Heading, Text, Button, useToast, Menu, MenuButton, MenuList, MenuItem, IconButton } from '@chakra-ui/react';
-import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
+import { 
+  Table, Thead, Tbody, Tr, Th, Td, 
+  Box, Flex, Heading, Text, Button, 
+  useToast, Menu, MenuButton, MenuList, MenuItem, IconButton,
+  VStack, Stack, Divider, Badge 
+} from '@chakra-ui/react';
+import { ArrowBackIcon, ArrowForwardIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
 import Layout from '../components/Layout';
 
@@ -16,11 +21,20 @@ export default function OpenData() {
 
   const textStyles = {
     fontSize: "calc(8px + 0.5vw)",
+    py: "calc(4px + 0.5vw)",
+    border: "1px solid",
+    borderColor: "gray.100"
   }
+
   const headerText = {
-    fontSize: "calc(6px + 1vw)",
+    fontSize: {base: "calc(10px + 1vw)", lg: "calc(10px + 0.5vw)"},
     letterSpacing: "0px",
-    textAlign: "center"
+    textAlign: "center",
+    py: "calc(2px + 0.5vw)",
+    border: "1px solid",
+    borderColor: "#15A33D",
+    bgColor: "#15A33D",
+    textColor: "white" 
   }
 
   useEffect(() => {
@@ -64,13 +78,6 @@ export default function OpenData() {
       .join(', ');
   };
 
-  const formatLocation = (lat, lng) => {
-    if (lat == null || lng == null) {
-      return "No location";
-    }
-    return `${parseFloat(lat).toFixed(4)}, ${parseFloat(lng).toFixed(4)}`;
-  };
-
   return (
     <Layout>
     <Box>
@@ -83,67 +90,113 @@ export default function OpenData() {
             ALL SUBMISSIONS ({totalCount})
           </Text>
 
-          <Box w="100%" maxW="100vw" p={{ base: 1, md: 5 }}>
-            <Table
-              variant="simple"
-              size="sm"
-              w="100%"
-              sx={{ tableLayout: "fixed" }} 
-            >
-              <Thead>
-                <Tr>
-                  <Th width="30%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" sx={headerText}>
-                    Detected Wastes
-                  </Th>
-                  <Th width="20%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" sx={headerText}>
-                    Date
-                  </Th>
-                  <Th width="25%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" sx={headerText}>
-                    Location
-                  </Th>
-                  <Th width="25%" border="1px solid" borderColor="gray.300" bgColor="#15A33D" textColor="white" sx={headerText}>
-                    Results
-                  </Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {flotectorData.map((entry) => (
-                  <Tr key={entry.id} bg="even:gray.100">
-                    <Td 
-                        border="1px solid" 
-                        borderColor="gray.300" 
-                        sx={textStyles}
-                        whiteSpace="normal" 
-                        wordBreak="break-word"
-                    >
-                        {formatClassCount(entry.class_count)}
-                    </Td>
-                    <Td border="1px solid" borderColor="gray.300" sx={textStyles} whiteSpace="normal" textAlign={"right"}>
-                        {new Date(entry.uploaded_at).toLocaleDateString()}
-                    </Td>
-                    <Td border="1px solid" borderColor="gray.300" sx={textStyles} whiteSpace="normal">
-                        {formatLocation(entry.lat, entry.lng)}
-                    </Td>
-                    <Td border="1px solid" borderColor="gray.300" sx={textStyles} textAlign={"center"}>
-                      <Text
-                        as={RouterLink}
-                        to={`/results/${entry.id}`}
-                        state={{ background: location }}
-                        color="teal.500"
-                        // fontSize={{ base: "xs", md: "md" }}
-                      >
-                        View Results
-                      </Text>
-                    </Td>
+          <Box w="100%" maxW="100vw" p={{ base: 2, md: 5 }}>
+            
+            {/* --- DESKTOP VIEW (TABLE) --- */}
+            <Box display={{ base: "none", md: "block" }}>
+              <Table
+                variant="simple"
+                size={{base: "md", lg: "lg"}}
+                w="100%"
+                sx={{ tableLayout: "fixed" }}
+              >
+                <Thead>
+                  <Tr>
+                    <Th width="30%" sx={headerText}>Detected Wastes</Th>
+                    <Th width="20%" sx={headerText}>Date</Th>
+                    <Th width="25%" sx={headerText}>Location</Th>
+                    <Th width="25%" sx={headerText}>Results</Th>
                   </Tr>
+                </Thead>
+                <Tbody>
+                  {flotectorData.map((entry) => (
+                    <Tr key={entry.id} bg="even:gray.100">
+                      <Td sx={textStyles} whiteSpace="normal" wordBreak="break-word">
+                          {formatClassCount(entry.class_count)}
+                      </Td>
+                      <Td sx={textStyles} whiteSpace="normal" textAlign={"right"}>
+                          {new Date(entry.uploaded_at).toLocaleDateString()}
+                      </Td>
+                      <Td sx={textStyles} whiteSpace="normal">
+                          {`${entry.barangay}, ${entry.city}`}
+                      </Td>
+                      <Td sx={textStyles} textAlign={"center"}>
+                        <Text
+                          as={RouterLink}
+                          to={`/results/${entry.id}`}
+                          state={{ background: location }}
+                          color="teal.500"
+                          fontWeight="bold"
+                        >
+                          View Results
+                        </Text>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </Box>
+
+            {/* --- MOBILE VIEW (CARDS) --- */}
+            <Box display={{ base: "block", md: "none" }} textAlign="left">
+              <VStack spacing={4} align="stretch">
+                {flotectorData.map((entry) => (
+                  <Box 
+                    key={entry.id} 
+                    borderWidth="1px" 
+                    borderRadius="lg" 
+                    overflow="hidden" 
+                    p={4} 
+                    boxShadow="sm"
+                    bg="white"
+                    borderColor="#15A33D"
+                  >
+                    <Flex justifyContent="space-between" alignItems="center" mb={2}>
+                      <Badge colorScheme="green" fontSize="0.8em" px={3} py={1} borderRadius={8}>
+                        {new Date(entry.uploaded_at).toLocaleDateString()}
+                      </Badge>
+                      <Text fontSize="xs" color="gray.500">
+                        {entry.city}
+                      </Text>
+                    </Flex>
+                    
+                    <Divider mb={2} />
+
+                    <Box mb={3}>
+                      <Text fontWeight="bold" fontSize="sm" color="#053774">Detected Wastes:</Text>
+                      <Text fontSize="sm" pl={2}>
+                        {formatClassCount(entry.class_count)}
+                      </Text>
+                    </Box>
+
+                    <Box mb={4}>
+                      <Text fontWeight="bold" fontSize="sm" color="#053774">Location:</Text>
+                      <Text fontSize="sm" pl={2}>
+                        {`${entry.barangay}, ${entry.city}`}
+                      </Text>
+                    </Box>
+
+                    <Button 
+                      as={RouterLink}
+                      to={`/results/${entry.id}`}
+                      state={{ background: location }}
+                      size="sm"
+                      width="100%"
+                      colorScheme="teal"
+                      variant="outline"
+                      _hover={{cursor: "pointer"}}
+                    >
+                      View Results
+                    </Button>
+                  </Box>
                 ))}
-              </Tbody>
-            </Table>
+              </VStack>
+            </Box>
+
           </Box>
 
           {/* --- PAGINATION UI --- */}
           <Flex justify="center" align="center" mt={4} pb={8}>
-              
               {/* Previous Button */}
               <IconButton
                   icon={<ArrowBackIcon />}
