@@ -22,12 +22,12 @@ import SubmissionsGraph from "./SubmissionsGraph";
   - top hotspots total reports value
   */}
 // h={{base: "300px", md: "400px"}}
-const KeyMetrics = ({ overallDetection, totalSubmissions, wasteType, topHotspot, icons }) => (
+const SubmissionsAnalytics = ({ overallDetection, totalSubmissions, wasteType, topHotspot, icons }) => (
   <Box w="100%" p={{ base: 4, md: 8 }} bg="#F6F6F6" borderRadius="20px" borderBottom="1px solid #C2C2C2">
 
     {/* Section Heading */}
     <Heading color="#053774" fontWeight="700" mb={6} fontSize={{ base: "2xl", sm: "3xl", md: "40px" }}>
-      Key Metrics
+      Submissions Analytics
     </Heading>
 
     <Grid 
@@ -79,4 +79,4 @@ const KeyMetrics = ({ overallDetection, totalSubmissions, wasteType, topHotspot,
   </Box>
 );
 
-export default KeyMetrics;
+export default SubmissionsAnalytics;

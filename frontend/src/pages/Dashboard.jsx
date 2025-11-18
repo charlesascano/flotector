@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { VStack, HStack, Text, Button, useBreakpointValue } from "@chakra-ui/react";
 import { FiRefreshCw } from "react-icons/fi";
 import Layout from '../components/Layout';
-import KeyMetrics from '../components/dashboard/KeyMetrics';
+import SubmissionsAnalytics from '../components/dashboard/SubmissionsAnalytics';
 import WasteAnalytics from '../components/dashboard/WasteAnalytics';
 import RecentSubmissions  from '../components/dashboard/RecentSubmissions';
 
@@ -55,7 +55,7 @@ export default function Dashboard() {
           </Button>
         </HStack>
 
-        <KeyMetrics />
+        <SubmissionsAnalytics />
         <WasteAnalytics />
         <RecentSubmissions />
       </VStack>
