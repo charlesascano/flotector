@@ -5,12 +5,80 @@ from ultralytics import YOLO
 from .load_model import load_model
 import uuid
 from datetime import datetime
+import requests
+import os
 
 submit_bp = Blueprint('submit', __name__, url_prefix='/api')
 
 # Load YOLO model once
 load_model()
 model = YOLO('./model/best.pt')
+
+def get_parsed_address(lat, lng):
+    TOKEN = os.getenv("MAPBOX_SECRET_TOKEN")
+    
+    # Basic validation: if no token or coordinates, return None/empty
+    if not TOKEN or lat is None or lng is None:
+        return {
+            "address": "Location unavailable",
+            "barangay": None, 
+            "city": None,
+            "province": None
+        }
+
+    # Mapbox API Call
+    url = f"https://api.mapbox.com/geocoding/v5/mapbox.places/{lng},{lat}.json"
+    params = {
+        "access_token": TOKEN, 
+        "types": "address,poi,place,locality,region", 
+        "limit": 1
+    }
+
+    try:
+        response = requests.get(url, params=params)
+        data = response.json()
+        
+        if not data.get('features'):
+            return {
+                "address": "Address not found", 
+                "barangay": None, 
+                "city": None, 
+                "province": None
+            }
+
+        feature = data['features'][0]
+        
+        # Initialize our dict with the full readable string
+        parsed_data = {
+            "address": feature.get('place_name', "Unknown Location"),
+            "barangay": None,
+            "city": None,
+            "province": None
+        }
+
+        # Loop through context from Mapbox to find parts
+        for part in feature.get('context', []):
+            part_type = part['id'].split('.')[0]
+            
+            if part_type == 'locality':
+                parsed_data['barangay'] = part['text']
+            
+            elif part_type == 'place':
+                parsed_data['city'] = part['text']
+
+            elif part_type == 'region':
+                parsed_data['province'] = part['text']
+        
+        return parsed_data
+
+    except Exception as e:
+        print(f"Mapbox API error: {e}")
+        return {
+            "address": "Address lookup failed", 
+            "barangay": None, 
+            "city": None, 
+            "province": None
+        }
 
 @submit_bp.route('/submit', methods=['POST'])
 def submit_and_process():
@@ -38,6 +106,9 @@ def submit_and_process():
         except (ValueError, TypeError):
             lng = None
 
+        # Fetch address data (reverse geocoding)
+        location_data = get_parsed_address(lat, lng)
+
         # 2. Generate UUID
         new_uuid = str(uuid.uuid4())
 
@@ -57,12 +128,15 @@ def submit_and_process():
         current_app.supabase.table('flotector-data').insert({
             'id': new_uuid,
             'created_at': created_at,
-            'uploaded_at': datetime.now().isoformat(),
             'lat': lat,
             'lng': lng,
             'file_name': file_name,
             'image_url': image_url,
-            'result_url': None
+            'result_url': None,
+            'address': location_data['address'],
+            'barangay': location_data['barangay'],
+            'city': location_data['city'],
+            'province': location_data['province']
         }).execute()
 
         # 5. Process the image (Run YOLO model)

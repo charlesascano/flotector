@@ -7,7 +7,7 @@ import Map from './pages/Map';
 import Results from "./pages/Results";
 import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
-import theme from './lib/theme';
+import theme from './theme/theme';
 
 function AppContent() {
   const location = useLocation();

@@ -185,7 +185,7 @@ export default function Submit() {
           onClick={handleSubmit}
           _hover={{ bg: '#128B34' }}
         >
-          SUBMIT NOW!
+          SUBMIT NOW
         </Button>
       </VStack>
     </Box>
