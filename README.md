@@ -9,12 +9,13 @@ For first time:
     - '.venv/Scripts/activate' to activate virtual environment
     - 'pip install -r requirements.txt' to install (This takes a while)
 
-2. Create file under backend folder named ".env" and input API keys (ask from team leader)
-
-3. Install frontend packages
+2. Install frontend packages
     - 'cd ..' to go to root folder
     - 'cd frontend' to go to frontend folder
     - 'npm install' to install
+
+3. Create file in the backend folder named ".env" and input API keys (ask from team leader)
+4. Create file in the frontend folder named ".env" and input API keys (ask from team leader)
 
 Run web app
 1. Open Split Terminal to run Backend and Frontend simultaneously 
