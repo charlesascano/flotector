@@ -1,6 +1,7 @@
-import { Box, Flex, IconButton, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerBody, VStack, Link } from "@chakra-ui/react";
+import { Box, Flex, IconButton, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerBody, VStack, Link, Image } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { Link as RouterLink} from "react-router-dom";
+import FlotectorLogo from '../assets/header-logo-svg/flotector_logo_horizontal_white.svg';
 
 const NavBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -11,7 +12,7 @@ const NavBar = () => {
     { name: "DASHBOARD", path: "/dashboard" },
     { name: "OPEN DATA", path: "/data" },
     { name: "WASTE MAP", path: "/map" },
-    { name: "ABOUT", path: "/" },
+    { name: "ABOUT", path: "/about" },
   ];
 
   return (
@@ -28,9 +29,12 @@ const NavBar = () => {
       >  
         <Flex justifyContent="space-between" align="center">
           <RouterLink to="/">
-            <Box fontWeight="bold" fontSize="xl">
-              FLOTECTOR
-            </Box>
+            <Image 
+              src={FlotectorLogo} 
+              alt="Flotector Logo" 
+              h="45px"
+              objectFit="contain" 
+            />
           </RouterLink>    
           <IconButton
             icon={<HamburgerIcon />}
