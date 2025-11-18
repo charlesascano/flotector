@@ -8,6 +8,10 @@ from datetime import datetime
 import requests
 import os
 
+# for .heic support
+from pillow_heif import register_heif_opener
+register_heif_opener()
+
 submit_bp = Blueprint('submit', __name__, url_prefix='/api')
 
 # Load YOLO model once
@@ -144,7 +148,7 @@ def submit_and_process():
         image = Image.open(file.stream)
         image = ImageOps.exif_transpose(image)
         
-        results = model(image, agnostic_nms=True)
+        results = model(image, agnostic_nms=True, iou=0.25)
         annotated_image = results[0].plot()
         
         # Count detections

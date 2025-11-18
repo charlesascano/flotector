@@ -20,7 +20,7 @@ const Dropzone = ({ inputRef, file, onFileChange }) => {
         ref={inputRef}
         id="fileInput"
         type="file"
-        accept="image/png, image/jpeg"
+        accept="image/png, image/jpeg, image/heic"
         hidden
         onChange={onFileChange}
       />
@@ -43,7 +43,7 @@ const Dropzone = ({ inputRef, file, onFileChange }) => {
               Upload your photo here
             </Box>
             <Box fontSize="2xs" color="#2457C5">
-              .png, .jpg up to 50MB
+              .png, .jpg, .heic up to 50MB
             </Box>
           </>
         )}
