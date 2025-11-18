@@ -144,7 +144,7 @@ def submit_and_process():
         image = Image.open(file.stream)
         image = ImageOps.exif_transpose(image)
         
-        results = model(image)
+        results = model(image, agnostic_nms=True)
         annotated_image = results[0].plot()
         
         # Count detections
