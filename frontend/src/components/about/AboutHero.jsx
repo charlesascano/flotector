@@ -12,6 +12,11 @@ const AboutHero = () => {
       px={4}
       textAlign="center"
     >
+
+      <Heading as="h1" size={{ base: 'xl', md: '2xl' }} mb={4}>
+          About
+        </Heading>
+      
       <Container maxW="4xl">
         <Image
           src={FlotectorLogo}
@@ -21,12 +26,8 @@ const AboutHero = () => {
           mb={6}
         />
 
-        <Heading as="h1" size={{ base: 'xl', md: '2xl' }} mb={4}>
-          About
-        </Heading>
-
         <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="light">
-          A community-powered system for detecting floating waste in the Imus River Watershed
+          A community-powered system for detecting floating waste in the Imus River
           using AI and crowdsourced photos.
         </Text>
       </Container>
