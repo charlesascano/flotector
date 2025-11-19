@@ -103,7 +103,7 @@ export default function OpenData() {
                 <Thead>
                   <Tr>
                     <Th width="30%" sx={headerText}>Detected Wastes</Th>
-                    <Th width="20%" sx={headerText}>Date</Th>
+                    <Th width="20%" sx={headerText}>Upload Date</Th>
                     <Th width="25%" sx={headerText}>Location</Th>
                     <Th width="25%" sx={headerText}>Results</Th>
                   </Tr>
