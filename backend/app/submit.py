@@ -113,6 +113,11 @@ def submit_and_process():
         # Fetch address data (reverse geocoding)
         location_data = get_parsed_address(lat, lng)
 
+        # Imus River location constraints
+        if location_data['city'] not in ['Amadeo', 'Bacoor', 'Dasmariñas', 'Imus', 'Kawit', 'Silang', 'Tagaytay City', 'Tagaytay']:
+            error_message = f"Location '{location_data['city']}' is outside the Imus River monitoring service zone."
+            return jsonify({"error": error_message}), 400
+        
         # 2. Generate UUID
         new_uuid = str(uuid.uuid4())
 
