@@ -130,13 +130,13 @@ export default function LocationHotspots({ brgy_per_city=[], city_totals=[] }) {
   const [selectedCity, setSelectedCity] = useState(null);
   // 1. DEFINE YOUR TARGET CITIES
   const TARGET_CITIES = [
+    "Amadeo",
+    "Bacoor",
     "Dasmariñas", 
     "Imus", 
-    "Bacoor", 
-    "Tagaytay City", 
-    "Amadeo", 
     "Kawit", 
-    "Silang"
+    "Silang",
+    "Tagaytay City", 
   ];
 
   // 2. NORMALIZE DATA (Merge fixed list with API data)
@@ -146,7 +146,7 @@ export default function LocationHotspots({ brgy_per_city=[], city_totals=[] }) {
     
     // If it exists, use it. If not, create a 0 count object.
     return existingData || { city: cityName, total_count: 0 };
-  });
+  }).sort((a, b) => b.total_count - a.total_count);
 
   // 4. Auto-select the first city when data loads
   useEffect(() => {

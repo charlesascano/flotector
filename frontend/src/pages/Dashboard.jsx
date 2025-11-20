@@ -53,8 +53,11 @@ export default function Dashboard() {
     };
   }, []);
 
+  const refreshData = () => {
+    fetchWasteAnalytics();
+  }
   // --- API Fetch Function (UPDATED WITH SMART LOGIC) ---
-  const fetchDashboardData = useCallback(async () => {
+  const fetchWasteAnalytics = useCallback(async () => {
     setIsLoading(true);
     try {
       const { start, end } = getDateRange(filterType);
@@ -88,8 +91,8 @@ export default function Dashboard() {
 
   // --- Effect: Fetch on Mount & Filter Change ---
   useEffect(() => {
-    fetchDashboardData();
-  }, [fetchDashboardData]);
+    fetchWasteAnalytics();
+  }, [fetchWasteAnalytics]);
 
   return (
     <Layout>
@@ -123,7 +126,7 @@ export default function Dashboard() {
             fontWeight="700"
             variant="link"
             leftIcon={<FiRefreshCw />}
-            onClick={fetchDashboardData}
+            onClick={refreshData}
             isDisabled={isLoading}
           >
             Refresh
@@ -139,6 +142,8 @@ export default function Dashboard() {
         <WasteAnalytics 
            // Summary Cards
                 data={wasteAnalyticsData}
+                currentFilter={filterType}
+                onFilterChange={setFilterType}
         />
 
         {/* --- 3. Recent Submissions (Static for now) --- */}

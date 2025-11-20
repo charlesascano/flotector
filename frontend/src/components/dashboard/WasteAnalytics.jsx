@@ -162,10 +162,10 @@ const WasteAnalytics = ({
                 <Text color="#5D5D5D" fontSize={{ base: 'xs' }} fontWeight="500">TOP HOTSPOT</Text>
                 <Box>
                   <Text fontWeight="700" fontSize={{ base: 'md', md: 'lg' }} color="#053774">
-                    {data ? `${data.highest_barangay_total.barangay}, ${data.highest_barangay_total.city} ` : 'No Data'}
+                    {data?.highest_barangay_total?.total_count ? `${data.highest_barangay_total.barangay}, ${data.highest_barangay_total.city} ` : 'No Data'}
                   </Text>
                   <Text fontSize={{ base: 'xs', md: 'sm' }} color="#053774">
-                    is the most reported area with <Text as="span" fontWeight="700">{data?.highest_barangay_total.total_count || 0}</Text> detections
+                    is the most reported area with <Text as="span" fontWeight="700">{data?.highest_barangay_total?.total_count || 0}</Text> detections
                   </Text>
                 </Box>
               </Flex>
