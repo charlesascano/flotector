@@ -8,6 +8,7 @@ import UploadHelper from "../components/UploadHelper";
 import Layout from '../components/Layout';
 import PrivacyPolicy from "../components/PrivacyPolicy";
 import PhotoInstructions from "../components/PhotoInstructions";
+import { COLORS } from "../constant";
 
 export default function Submit() {
   const [file, setFile] = useState(null);
@@ -129,7 +130,7 @@ export default function Submit() {
       {/* --- UPLOADER BOX --- */}
       <VStack spacing={6} w="full" maxW={{ base: "90%", md: "600px" }} mx="auto" textAlign="center" bg="white"    border="1px solid" borderColor="rgba(0,0,0,0.1)" borderRadius="xl" p={{ base: 4, md: 8 }} boxShadow="lg">
 
-        <Heading fontSize={{ base:"36px", sm: "50px", md: "60px" }} color="#15A33D" lineHeight="1" mt={10}>
+        <Heading fontSize={{ base:"36px", sm: "50px", md: "60px" }} color={COLORS.darkBlue} lineHeight="1" mt={10}>
           GET INVOLVED!
         </Heading>
 

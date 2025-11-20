@@ -1,5 +1,6 @@
 import { Box, Heading, Text, VStack, Icon, SimpleGrid } from '@chakra-ui/react';
 import { FaEye, FaCamera, FaUpload, FaChartLine } from 'react-icons/fa';
+import { COLORS } from '../constant';
 
 const steps = [
   {
@@ -49,7 +50,7 @@ const HowItWorks = () => (
       fontWeight="600"
       fontSize={{ base: '3xl', md: '5xl', lg: '64px' }}
       textAlign="center"
-      color="#053774"
+      color={COLORS.darkBlue}
       mb={6}
     >
       HOW IT WORKS
@@ -59,7 +60,7 @@ const HowItWorks = () => (
       fontSize={{ base: 'sm', md: 'lg', lg: 'xl' }}
       textAlign="center"
       mb={12}
-      color="#053774"
+      color={COLORS.darkBlue}
       maxW="2xl"
       mx="auto"
     >
