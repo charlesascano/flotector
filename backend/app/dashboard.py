@@ -24,7 +24,7 @@ def execute_dashboard_query(app, start_date: date, end_date: date):
         # --- CHANGED SECTION STARTS HERE ---
         
         # 1. Debug print to see exactly what Supabase is returning
-        print(f"DEBUG RPC {rpc_name} RAW DATA: {data}")
+        # print(f"DEBUG RPC {rpc_name} RAW DATA: {data}")
 
         # 2. Handle both List (PostgREST standard) and Dict (Single Composite Return)
         if data:
@@ -78,14 +78,14 @@ def get_dashboard_data():
 
     # Execute the query helper function
     result = execute_dashboard_query(current_app, start_date, end_date)
-    print(f"test: {result}")
+    # print(f"test: {result}")
     result2 = execute_dashboard_query(
         current_app,
         datetime.strptime('2025-05-13', '%Y-%m-%d').date(),
         datetime.strptime('2025-05-13', '%Y-%m-%d').date()
     )
 
-    print(f"awooga: {result2}")
+    # print(f"awooga: {result2}")
     # Check if the result is an error tuple
     if isinstance(result, tuple) and len(result) == 2 and 'error' in result[0]:
         # Error tuple format: ({'error': '...'}, status_code)
@@ -108,7 +108,8 @@ def execute_daily_submissions_query(app, start_date, end_date):
         }
         
         # 2. Call the specific RPC for daily submissions
-        response = app.supabase.rpc('get_daily_submissions', params).execute()
+        response = app.supabase.rpc('get_submissions_summary', params).execute()
+        print(f"daslkdjaslkdjasdkls LMAO || KNAI | ASD: {response}")
 
         # The result of a function that RETURNS TABLE is typically a list of dicts.
         return response.data
@@ -119,14 +120,14 @@ def execute_daily_submissions_query(app, start_date, end_date):
     except Exception as e:
         current_app.logger.error(f"General Query Error for daily submissions: {e}")
         raise
-@dashboard_bp.route('/daily-submissions', methods=['GET'])
+@dashboard_bp.route('/submissions', methods=['GET'])
 def get_daily_submissions_route():
     """
     API endpoint to fetch daily submission counts within a date range.
-    Expected URL: /api/dashboard/daily-submissions?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
+    Expected URL: /api/dashboard/submissions?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
     """
-    start_date_str = request.args.get('startDate')
-    end_date_str = request.args.get('endDate')
+    start_date_str = request.args.get('start_date')
+    end_date_str = request.args.get('end_date')
 
     if not start_date_str or not end_date_str:
         return jsonify({"error": "Missing startDate or endDate parameter"}), 400

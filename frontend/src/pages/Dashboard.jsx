@@ -26,7 +26,8 @@ export default function Dashboard() {
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const [filterType, setFilterType] = useState('Last 7 days');
-  const [dashboardData, setDashboardData] = useState(null);
+  const [submFilterType, setSubmFilterType] = useState('Last 7 days');
+  const [submissionData, setSubmissionData] = useState(null);
   const [wasteAnalyticsData, setWasteAnalyticsData] = useState(null);
   
   const toast = useToast();
@@ -55,14 +56,52 @@ export default function Dashboard() {
 
   const refreshData = () => {
     fetchWasteAnalytics();
+    fetchSubAnalytics();
   }
+
+   // --- API Fetch Function (UPDATED WITH SMART LOGIC) ---
+  const fetchSubAnalytics = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const { start, end } = getDateRange(submFilterType);
+      
+      console.log(`Submission Fetching range: ${start} to ${end}`); 
+      
+      // NOTE: Ensure this URL matches your Flask backend
+      const response = await fetch(`http://localhost:5000/api/dashboard/submissions?start_date=${start}&end_date=${end}`);
+      
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.statusText}`);
+      }
+      
+      const result = await response.json();
+      setSubmissionData(result.data[0]);
+      console.log("submission shid:", result.data[0]);
+    } catch (error) {
+      console.error("Dashboard fetch error:", error);
+      toast({
+        title: "Error loading dashboard",
+        description: "Could not fetch latest data. Check console for details.",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [submFilterType, getDateRange, toast]);
+
+  useEffect(() => {
+    fetchSubAnalytics();
+  }, [fetchSubAnalytics]);
+
   // --- API Fetch Function (UPDATED WITH SMART LOGIC) ---
   const fetchWasteAnalytics = useCallback(async () => {
     setIsLoading(true);
     try {
       const { start, end } = getDateRange(filterType);
       
-      console.log(`Fetching range: ${start} to ${end}`); 
+      console.log(`Waste Analytics Fetching range: ${start} to ${end}`); 
       
       // NOTE: Ensure this URL matches your Flask backend
       const response = await fetch(`http://localhost:5000/api/dashboard/waste-analytics?start_date=${start}&end_date=${end}`);
@@ -73,7 +112,6 @@ export default function Dashboard() {
       
       const result = await response.json();
       setWasteAnalyticsData(result);
-      console.log("API RAW RESULT:", result);
 
     } catch (error) {
       console.error("Dashboard fetch error:", error);
@@ -135,7 +173,9 @@ export default function Dashboard() {
 
         {/* --- 1. Submissions Analytics Section --- */}
         <SubmissionsAnalytics 
-
+          data={submissionData}
+          currentFilter={submFilterType}
+          onFilterChange={setSubmFilterType}
         />
 
         {/* --- 2. Waste Analytics Section (Controls Filters) --- */}

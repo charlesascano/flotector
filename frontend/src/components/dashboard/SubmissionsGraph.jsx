@@ -34,7 +34,7 @@ const CustomLineTooltip = ({ active, payload, label }) => {
 
 function SubmissionsGraph({ data }) {
   // 1. Handle empty data case
-  if (!data || data.length === 0) {
+  if (!data || Object.keys(data).length === 0) {
     return (
       <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#949494' }}>
         No submission data for this period
@@ -42,8 +42,14 @@ function SubmissionsGraph({ data }) {
     );
   }
 
-  // 2. Calculate Y-Axis Max dynamically
-  const maxValue = Math.max(...data.map((d) => d.submissions));
+  // 2. TRANSFORM DATA: Convert Object { "2025-11-18": 25 } to Array [{ date: "2025-11-18", count: 25 }]
+  const chartData = Object.entries(data).map(([date, count]) => ({
+    date,
+    count
+  }));
+
+  // 3. Calculate Y-Axis Max dynamically using the new array
+  const maxValue = Math.max(...chartData.map((d) => d.count));
   const yMax = maxValue === 0 ? 10 : Math.ceil((maxValue * 1.1) / 10) * 10;
 
   return (
@@ -51,12 +57,12 @@ function SubmissionsGraph({ data }) {
       <h2 className="chart-title" style={{ fontSize: "calc(8px + 1vw)" }}>Submissions over time</h2>
       <ResponsiveContainer width="100%" height="100%" minHeight={250}>
         <LineChart
-          data={data}
+          data={chartData} // Use the transformed array here
           margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
         >
           <XAxis
-            dataKey="date" // Corresponds to the SQL 'date' field
-            tickFormatter={formatDateTick} // Formats "2025-11-20" to "Nov 20"
+            dataKey="date"
+            tickFormatter={formatDateTick}
             axisLine={false}
             tickLine={false}
             tick={{ fill: '#949494', fontSize: 11, fontWeight: 500 }}
@@ -72,7 +78,7 @@ function SubmissionsGraph({ data }) {
           <Tooltip content={<CustomLineTooltip />} />
           <Line
             type="monotone"
-            dataKey="submissions" // Corresponds to the SQL 'submissions' field
+            dataKey="count" // Match the key created in step 2
             stroke="#15A33D"
             strokeWidth={4}
             dot={false}
