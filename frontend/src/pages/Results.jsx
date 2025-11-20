@@ -1,9 +1,12 @@
-import { Box, Flex, Text, Image, Heading, HStack, Button, SimpleGrid, Spinner, useToast, IconButton, Drawer, DrawerOverlay, DrawerContent, DrawerBody } from "@chakra-ui/react";
+import { Box, Icon, Flex, Text, Image, Heading, HStack, Button, SimpleGrid, Spinner, useToast, IconButton, Drawer, DrawerOverlay, DrawerContent, DrawerBody, color } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Link as RouterLink, useParams, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import WasteCard from "../components/WasteCard";
 import Layout from '../components/Layout';
+import { FaLocationDot } from "react-icons/fa6";
+import { FaCalendar } from "react-icons/fa";
+import { FaCalendarCheck } from "react-icons/fa";
 
 export default function Results({ isOverlay = false }) {
   const { uuid } = useParams();
@@ -20,8 +23,36 @@ export default function Results({ isOverlay = false }) {
     setIsDrawerOpen(false);
   };
 
+  const handleOpenMap = () => {
+    if (resultsData) {
+      navigate('/map', {
+        state: { 
+          latitude: resultsData.lat, // Make sure these exist in your DB response!
+          longitude: resultsData.lng,
+        }
+      });
+    }
+  };
+
   const onDrawerCloseComplete = () => {
     navigate(-1);
+  };
+
+  const toggleView = () => {
+    if (showDetections) setImageUrl(resultsData.image_url);
+    else setImageUrl(resultsData.result_url);
+    setShowDetections(!showDetections);
+    setImageLoaded(false);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString); 
+    const options = {
+      month: 'short',   // 'Jan', 'Feb', etc.
+      day: 'numeric',   // '5'
+      year: 'numeric',  // '2025'
+    };
+    return date.toLocaleDateString('en-US', options);
   };
 
   // Fetch Results data
@@ -29,7 +60,10 @@ export default function Results({ isOverlay = false }) {
   const [classCount, setClassCount] = useState({});
   const [loading, setLoading] = useState(true);
   const toast = useToast();
-
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [resultsData, setResultsData] = useState(null);
+  const [showDetections, setShowDetections] = useState(true);
+  
   useEffect(() => {
     const fetchResults = async () => {
       try {
@@ -43,6 +77,7 @@ export default function Results({ isOverlay = false }) {
         }
 
         const data = await response.json();
+        setResultsData(data);
         setImageUrl(data.result_url);
         setClassCount(data.class_count || {});
 
@@ -92,7 +127,7 @@ export default function Results({ isOverlay = false }) {
 
   // Results Content
   const ResultsContent = () => (
-    <Flex direction="column" px={isOverlay ? 0 : 4} minH={isOverlay ? "100%" : "100vh"} position="relative">
+    <Flex direction="column" bgColor={"#F6F6F6"} px={isOverlay ? 0 : 4} minH={isOverlay ? "100%" : "100vh"} position="relative">
       
       {/* If overlay mode: show back button to close the drawer */}
       {isOverlay && (
@@ -115,12 +150,17 @@ export default function Results({ isOverlay = false }) {
 
       <Flex
         direction={{ base: "column", md: "row" }}
+        bgColor={"white"}
+        boxShadow="0px 4px 4px rgba(0,0,0,0.25)"
+        borderRadius="35px"
+        p={4}
+        pb={8}
         gap={{ base: 8, md: 12 }}
         maxW="1200px"
         mx="auto"
         w="100%"
         align="flex-start"
-        mt={isOverlay ? 12 : 5} // Add top margin to clear the back button
+        mt={isOverlay ? 12 : 8} // Add top margin to clear the back button
       >
         {/* Left Column: Image */}
         <Box w={{ base: "100%", md: "45%" }} display={"flex"} textAlign={"center"} alignItems={"center"} flexDirection={"column"} px={{ base: 4, md: 6 }}>
@@ -143,9 +183,21 @@ export default function Results({ isOverlay = false }) {
                 w={{ base: "100%", md: "120%" }}
                 maxW="400px"
                 fallback={<Spinner size="xl" color="#15A33D" />}
+                onLoad={() => setImageLoaded(true)}
               />
             )}
           </Box>
+          { imageLoaded && (
+            <Button 
+              onClick={toggleView}
+              variant="outline"
+              rounded="xl"
+              py='12px'
+              h="50px"
+            >
+              {showDetections ? "Show Original" : "Show Detections" }
+            </Button> 
+          )}
         </Box>
 
         {/* Right Column: Cards */}
@@ -159,6 +211,7 @@ export default function Results({ isOverlay = false }) {
           justifyContent="center"
           flexShrink={0}
         >
+
           <Heading
             fontSize={{ base: "16px", md: "lg" }}
             mt={{ base: "5px", md: "50px" }}
@@ -175,6 +228,56 @@ export default function Results({ isOverlay = false }) {
               renderWasteCards()
             )}
           </SimpleGrid>
+
+
+          <Box
+            mt={12}
+            variant="outline"
+            borderColor="#0a2760"
+            bgColor={"gray.100"}
+            borderRadius="md"
+            w="80%"
+            p={4}
+            position={"relative"}
+          >
+            <Text 
+              fontSize={{base: 'calc(8px + 1vw)', sm: "lg"}}
+              fontWeight={'bold'}
+              py={2}
+              px={4}
+              borderRadius={4}
+              color={'white'}
+              position={"absolute"}
+              top={{base: -6, sm: -8}}
+              bgColor={"#15A33D"}
+              boxShadow={'lg'}
+            >
+              Submission Details
+            </Text>
+            <Flex flexDirection={'column'} gap={6}>
+              <Flex gap={4} alignItems={"center"}>
+                <Icon as={FaCalendar} boxSize={6}></Icon>
+                <Flex flexDirection={'column'}>
+                  <Text fontWeight={'bold'}>Date Captured:</Text>
+                  <Text>{formatDate(resultsData && resultsData.created_at)}</Text>
+                </Flex>
+              </Flex>
+              <Flex gap={4} alignItems={"center"}>
+                <Icon as={FaCalendarCheck} boxSize={6}></Icon>
+                <Flex flexDirection={'column'}>
+                  <Text fontWeight={'bold'}>Upload Date:</Text>
+                  <Text>{formatDate(resultsData && resultsData.uploaded_at)}</Text>
+                </Flex>
+              </Flex>
+              <Flex onClick={handleOpenMap} gap={4} alignItems={'center'} cursor='pointer' _hover={{color: "blue.600", transition: "150ms"}}>
+                <Icon as={FaLocationDot} boxSize={6}></Icon>
+                <Flex flexDirection={'column'}>
+                  <Text fontWeight={'bold'}>Location:</Text>
+                  <Text >{resultsData && resultsData.barangay}, {resultsData && resultsData.city}</Text>
+                </Flex>
+              </Flex>
+            </Flex>
+          </Box>
         </Box>
       </Flex>
 

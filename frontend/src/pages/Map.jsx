@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react'; // Added useMemo
 import { Box, Spinner, HStack, Button, Select } from "@chakra-ui/react";
 import Map, { Marker, NavigationControl } from 'react-map-gl/mapbox';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -15,11 +15,31 @@ export default function MapPage() {
   const navigate = useNavigate();
   const location = useLocation(); 
 
-  // Define options once to use in both Mobile and Desktop views
+  // 1. GET COORDINATES FROM NAVIGATION STATE
+  // If location.state exists (user clicked "View on Map"), use those coords.
+  // Otherwise, default to the Imus/Cavite area.
+  const incomingLocation = location.state;
+
+  const initialView = useMemo(() => {
+    if (incomingLocation && incomingLocation.latitude && incomingLocation.longitude) {
+      return {
+        latitude: incomingLocation.latitude,
+        longitude: incomingLocation.longitude,
+        zoom: 16 // Zoom in close if looking at a specific item
+      };
+    }
+    return {
+      latitude: 14.3800,
+      longitude: 120.9405,
+      zoom: 12 // Default wide view
+    };
+  }, [incomingLocation]); // Only recalculate if incomingLocation changes
+
   const filterOptions = ['All', 'Today', 'This Week', 'This Month', 'Custom'];
 
   useEffect(() => {
     const fetchFromPython = async () => {
+      
       setLoading(true);
       try {
         let url = `http://localhost:5000/api/markers?filter=${filter}`;
@@ -32,7 +52,7 @@ export default function MapPage() {
         setLoading(false);
       }
     };
-
+    window.scrollTo(0, 0); // Scroll to top at first load
     fetchFromPython();
   }, [filter]);
 
@@ -40,17 +60,16 @@ export default function MapPage() {
     <Box
       position="absolute"
       top="30px"
-      right="20px" // Position top-right
-      left="auto"  // Reset left
-      transform="none" // Reset center transform
+      right="20px"
+      left="auto"
+      transform="none"
       zIndex="10"
       bg="white"
       p="2"
       borderRadius="md"
       boxShadow="lg"
-      minW={{ base: "140px", md: "auto" }} // Ensure dropdown has width on mobile
+      minW={{ base: "140px", md: "auto" }}
     >
-      {/* Mobile View: Dropdown (Visible on 'base', hidden on 'md') */}
       <Box display={{ base: 'block', md: 'none' }}>
         <Select 
             value={filter} 
@@ -65,7 +84,6 @@ export default function MapPage() {
         </Select>
       </Box>
 
-      {/* Desktop View: Buttons (Hidden on 'base', visible on 'md') */}
       <HStack spacing="2" display={{ base: 'none', md: 'flex' }}>
         {filterOptions.map((period) => (
           <Button
@@ -89,23 +107,39 @@ export default function MapPage() {
         
         <Box position="absolute" top="0" left="0" right="0" bottom="0">
           <Map
-            initialViewState={{
-              longitude: 120.9405,
-              latitude: 14.3800,
-              zoom: 12
-            }}
+            // 2. USE THE DYNAMIC INITIAL VIEW
+            initialViewState={initialView}
             style={{ width: "100%", height: "100%" }}
             mapStyle="mapbox://styles/mapbox/streets-v12"
             mapboxAccessToken={MAPBOX_TOKEN}
           >
             <NavigationControl position="bottom-right" />
 
+            {/* 3. (OPTIONAL) RENDER THE SELECTED MARKER IMMEDIATELY 
+                This ensures the pin shows up even if the API is still loading 
+                or if the 'filter' would normally hide it.
+            */}
+            {incomingLocation && (
+               <Marker
+                latitude={incomingLocation.latitude}
+                longitude={incomingLocation.longitude}
+                anchor="bottom"
+              >
+                {/* A Distinct Pin Color (e.g. Blue) for the selected item */}
+                <svg height="40" viewBox="0 0 24 24" style={{ fill: '#3182ce', stroke: 'white', strokeWidth: '2px', filter: 'drop-shadow(0px 4px 2px rgba(0,0,0,0.3))' }}>
+                  <path d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"/>
+                </svg>
+              </Marker>
+            )}
+
+            {/* LOADING STATE */}
             {loading && (
-              <Box display="flex" alignItems="center" justifyContent="center" height="100%">
+              <Box display="flex" alignItems="center" justifyContent="center" height="100%" position="absolute" top="0" w="100%" zIndex="1">
                 <Spinner size="xl" color="#053774" />
               </Box>
             )}
 
+            {/* REGULAR API MARKERS */}
             {!loading && locations.map((entry) => (
               <Marker
                 key={entry.id}
@@ -114,6 +148,7 @@ export default function MapPage() {
                 anchor="bottom"
                 onClick={(e) => {
                   e.originalEvent.stopPropagation();
+                  // Prevent navigating if we are already on this result to avoid loops
                   navigate(`/results/${entry.id}`, { 
                     state: { background: location } 
                   });

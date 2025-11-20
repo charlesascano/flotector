@@ -7,7 +7,7 @@ def get_results(uuid):
     try:
         # 1. Query the database for the matching ID
         response = current_app.supabase.table('flotector-data') \
-            .select('result_url', 'class_count') \
+            .select('result_url', 'image_url', 'class_count', 'barangay', 'city', 'created_at', 'uploaded_at', 'lat', 'lng') \
             .eq('id', uuid) \
             .single() \
             .execute()
