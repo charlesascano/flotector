@@ -27,6 +27,7 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [filterType, setFilterType] = useState('Last 7 days');
   const [dashboardData, setDashboardData] = useState(null);
+  const [wasteAnalyticsData, setWasteAnalyticsData] = useState(null);
   
   const toast = useToast();
 
@@ -61,53 +62,15 @@ export default function Dashboard() {
       console.log(`Fetching range: ${start} to ${end}`); 
       
       // NOTE: Ensure this URL matches your Flask backend
-      const response = await fetch(`http://localhost:5000/api/dashboard/summary?startDate=${start}&endDate=${end}`);
+      const response = await fetch(`http://localhost:5000/api/dashboard/waste-analytics?start_date=${start}&end_date=${end}`);
       
       if (!response.ok) {
         throw new Error(`API Error: ${response.statusText}`);
       }
       
       const result = await response.json();
-      console.log("API RAW RESULT:", result); // Debug log to see what backend sends
-      
-      let finalData = null;
-
-      // 1. Check if backend returned the "No metrics" string message
-      if (result.data === "No metrics available for the selected range.") {
-        console.warn("Backend reported no data for this range.");
-        setDashboardData(null); // Clear data so UI shows 0s
-        setLastUpdated(new Date());
-        return;
-      }
-
-      // 2. Smart Unwrapping
-      if (result.data && typeof result.data === 'object') {
-        // Case A: Backend sends { data: { overall_totals: ... } }
-        finalData = result.data;
-      } else if (result.overall_totals) {
-         // Case B: Backend sends { overall_totals: ... } directly
-         finalData = result;
-      }
-
-      if (result.data && typeof result.data === 'object') {
-        finalData = result.data;
-      } else if (result.overall_totals) {
-        finalData = result;
-      }
-
-      // 🔹 DEBUG: Log top hotspots right after finalData is set
-      console.log("Parsed dashboard data:", finalData);
-      console.log("Top hotspots array:", finalData?.top_hotspots);
-
-      // 3. State Update
-      if (finalData) {
-        setDashboardData(finalData);
-        setLastUpdated(new Date());
-      } else {
-        console.warn("Data structure mismatch. Received:", result);
-        // Don't throw error here to prevent crashing, just let it be empty
-        setDashboardData(null);
-      }
+      setWasteAnalyticsData(result);
+      console.log("API RAW RESULT:", result);
 
     } catch (error) {
       console.error("Dashboard fetch error:", error);
@@ -127,14 +90,6 @@ export default function Dashboard() {
   useEffect(() => {
     fetchDashboardData();
   }, [fetchDashboardData]);
-
-  // --- Safe Data Accessors ---
-  // Defaults prevent crashes if dashboardData is null
-  const stats = dashboardData || {};
-  const overall = stats.overall_totals || {};
-  const topHotspot = (stats.top_hotspots && stats.top_hotspots.length > 0) 
-    ? stats.top_hotspots[0] 
-    : {};
 
   return (
     <Layout>
@@ -177,24 +132,13 @@ export default function Dashboard() {
 
         {/* --- 1. Submissions Analytics Section --- */}
         <SubmissionsAnalytics 
-          totalSubmissions={overall.total_submissions}
-          graphData={stats.submissions_over_time || []}
+
         />
 
         {/* --- 2. Waste Analytics Section (Controls Filters) --- */}
         <WasteAnalytics 
            // Summary Cards
-           overallDetection={overall.total_detected_wastes}
-           wasteType={stats.top_waste_type?.waste_class}
-           topHotspot={topHotspot}
-           
-           // Charts Data
-           donutData={stats.waste_breakdown || []}
-           locationData={stats.detection_counts_per_city || []}
-           
-           // Filter State
-           currentFilter={filterType}
-           onFilterChange={setFilterType}
+                data={wasteAnalyticsData}
         />
 
         {/* --- 3. Recent Submissions (Static for now) --- */}

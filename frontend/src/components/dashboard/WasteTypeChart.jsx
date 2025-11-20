@@ -37,7 +37,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-export default function WasteTypeChart({ data }) {
+export default function WasteTypeChart({ data=null }) {
   // 1. Handle empty data
   if (!data || data.length === 0) {
     return (
@@ -47,20 +47,16 @@ export default function WasteTypeChart({ data }) {
     );
   }
 
-  // 2. Calculate Total & Percentages
-  const total = data.reduce((sum, d) => sum + d.value, 0);
+  const total = data.reduce((sum, item) => sum + item.total_count, 0);
 
   // 3. Process Data (Sort, Color, Percentage)
   const processedData = [...data]
-    .sort((a, b) => b.value - a.value)
     .map((item) => {
-      const key = item.name.toLowerCase();
+      const key = item.waste_type.toLowerCase();
       return {
         ...item,
-        // Use mapped color or fallback
         color: TYPE_COLORS[key] || TYPE_COLORS.default,
-        // Calculate percentage string
-        percentage: total > 0 ? `${((item.value / total) * 100).toFixed(1)}%` : '0%'
+        percentage: total > 0 ? `${((item.total_count / total) * 100).toFixed(1)}%` : '0%'
       };
     });
 
@@ -75,7 +71,7 @@ export default function WasteTypeChart({ data }) {
             <PieChart>
               <Pie
                 data={processedData}
-                dataKey="value"
+                dataKey="total_count"
                 cx="50%"
                 cy="50%"
                 innerRadius={55}
@@ -113,9 +109,9 @@ export default function WasteTypeChart({ data }) {
               <span className="legend-cell legend-type">
                 <span className="legend-color-dot" style={{ backgroundColor: entry.color }} />
                 {/* Capitalize name */}
-                {entry.name.charAt(0).toUpperCase() + entry.name.slice(1)}
+                {entry.waste_type.charAt(0).toUpperCase() + entry.waste_type.slice(1)}
               </span>
-              <span className="legend-cell">{entry.value}</span>
+              <span className="legend-cell">{entry.total_count}</span>
               <span className="legend-cell">{entry.percentage}</span>
             </div>
           ))}
