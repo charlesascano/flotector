@@ -12,6 +12,7 @@ const NavBar = () => {
     { name: "DASHBOARD", path: "/dashboard" },
     { name: "OPEN DATA", path: "/data" },
     { name: "WASTE MAP", path: "/map" },
+    { name: "CATALOG", path: "/catalog" },
     { name: "ABOUT", path: "/about" },
   ];
 
