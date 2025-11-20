@@ -20,7 +20,6 @@ const Dropzone = ({ inputRef, file, onFileChange }) => {
         ref={inputRef}
         id="fileInput"
         type="file"
-        accept="image/png, image/jpeg, image/heic"
         hidden
         onChange={onFileChange}
       />
