@@ -3,7 +3,6 @@ import { Box, Spinner, HStack, Button, Select } from "@chakra-ui/react";
 import Map, { Marker, NavigationControl } from 'react-map-gl/mapbox';
 import { useNavigate, useLocation } from 'react-router-dom';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import Layout from '../components/Layout';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -101,71 +100,69 @@ export default function MapPage() {
   );
 
   return (
-    <Layout>
-      <Box h="100vh" w="100%" position="relative">
-        <FilterMenu />
-        
-        <Box position="absolute" top="0" left="0" right="0" bottom="0">
-          <Map
-            // 2. USE THE DYNAMIC INITIAL VIEW
-            initialViewState={initialView}
-            style={{ width: "100%", height: "100%" }}
-            mapStyle="mapbox://styles/mapbox/streets-v12"
-            mapboxAccessToken={MAPBOX_TOKEN}
-          >
-            <NavigationControl position="bottom-right" />
+    <Box h="100vh" w="100%" position="relative">
+      <FilterMenu />
+      
+      <Box position="absolute" top="0" left="0" right="0" bottom="0">
+        <Map
+          // 2. USE THE DYNAMIC INITIAL VIEW
+          initialViewState={initialView}
+          style={{ width: "100%", height: "100%" }}
+          mapStyle="mapbox://styles/mapbox/streets-v12"
+          mapboxAccessToken={MAPBOX_TOKEN}
+        >
+          <NavigationControl position="bottom-right" />
 
-            {/* 3. (OPTIONAL) RENDER THE SELECTED MARKER IMMEDIATELY 
-                This ensures the pin shows up even if the API is still loading 
-                or if the 'filter' would normally hide it.
-            */}
-            {incomingLocation && (
-               <Marker
-                latitude={incomingLocation.latitude}
-                longitude={incomingLocation.longitude}
-                anchor="bottom"
-              >
-                {/* A Distinct Pin Color (e.g. Blue) for the selected item */}
-                <svg height="40" viewBox="0 0 24 24" style={{ fill: '#3182ce', stroke: 'white', strokeWidth: '2px', filter: 'drop-shadow(0px 4px 2px rgba(0,0,0,0.3))' }}>
-                  <path d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"/>
-                </svg>
-              </Marker>
-            )}
-
-            {/* LOADING STATE */}
-            {loading && (
-              <Box display="flex" alignItems="center" justifyContent="center" height="100%" position="absolute" top="0" w="100%" zIndex="1">
-                <Spinner size="xl" color="#053774" />
-              </Box>
-            )}
-
-            {/* REGULAR API MARKERS */}
-            {!loading && locations.map((entry) => (
+          {/* 3. (OPTIONAL) RENDER THE SELECTED MARKER IMMEDIATELY 
+              This ensures the pin shows up even if the API is still loading 
+              or if the 'filter' would normally hide it.
+          */}
+          {incomingLocation && (
               <Marker
-                key={entry.id}
-                longitude={entry.lng}
-                latitude={entry.lat}
-                anchor="bottom"
-                onClick={(e) => {
-                  e.originalEvent.stopPropagation();
-                  // Prevent navigating if we are already on this result to avoid loops
-                  navigate(`/results/${entry.id}`, { 
-                    state: { background: location } 
-                  });
-                }}
+              latitude={incomingLocation.latitude}
+              longitude={incomingLocation.longitude}
+              anchor="bottom"
+            >
+              {/* A Distinct Pin Color (e.g. Blue) for the selected item */}
+              <svg height="40" viewBox="0 0 24 24" style={{ fill: '#3182ce', stroke: 'white', strokeWidth: '2px', filter: 'drop-shadow(0px 4px 2px rgba(0,0,0,0.3))' }}>
+                <path d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"/>
+              </svg>
+            </Marker>
+          )}
+
+          {/* LOADING STATE */}
+          {loading && (
+            <Box display="flex" alignItems="center" justifyContent="center" height="100%" position="absolute" top="0" w="100%" zIndex="1">
+              <Spinner size="xl" color="#053774" />
+            </Box>
+          )}
+
+          {/* REGULAR API MARKERS */}
+          {!loading && locations.map((entry) => (
+            <Marker
+              key={entry.id}
+              longitude={entry.lng}
+              latitude={entry.lat}
+              anchor="bottom"
+              onClick={(e) => {
+                e.originalEvent.stopPropagation();
+                // Prevent navigating if we are already on this result to avoid loops
+                navigate(`/results/${entry.id}`, { 
+                  state: { background: location } 
+                });
+              }}
+            >
+              <svg 
+                height="30" 
+                viewBox="0 0 24 24" 
+                style={{cursor: 'pointer', fill: '#E53E3E', stroke: 'white', strokeWidth: '1px'}}
               >
-                <svg 
-                  height="30" 
-                  viewBox="0 0 24 24" 
-                  style={{cursor: 'pointer', fill: '#E53E3E', stroke: 'white', strokeWidth: '1px'}}
-                >
-                  <path d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"/>
-                </svg>
-              </Marker>
-            ))}
-          </Map>
-        </Box>
+                <path d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"/>
+              </svg>
+            </Marker>
+          ))}
+        </Map>
       </Box>
-    </Layout>
+    </Box>
   );
 }

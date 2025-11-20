@@ -8,6 +8,7 @@ import Results from "./pages/Results";
 import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
 import Catalog from "./pages/Catalog";
+import Layout from './components/Layout';
 import theme from './theme/theme';
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -19,14 +20,14 @@ function AppContent() {
     <>
       <ScrollToTop />
       <Routes location={background || location}>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Layout><Home/></Layout>} />
         <Route path="/submit" element={<Submit />} />
-        <Route path="/data" element={<Data />} />
-        <Route path="/map" element={<Map />} />
-        <Route path="/results/:uuid" element={<Results />} />
+        <Route path="/data" element={<Layout><Data /></Layout>} />
+        <Route path="/map" element={<Layout><Map /></Layout>} />
+        <Route path="/results/:uuid" element={<Layout><Results /></Layout>} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/catalog" element={<Catalog />} />
+        <Route path="/about" element={<Layout><About/></Layout>} />
+        <Route path="/catalog" element={<Layout><Catalog /></Layout>} />
       </Routes>
 
       {/* If background exists, render Results as an overlay */}
