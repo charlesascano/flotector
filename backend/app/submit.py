@@ -94,6 +94,14 @@ def submit_and_process():
         
         file = request.files['file']
         
+        # file constraints
+        valid_extensions = ['.jpg', '.jpeg', '.png', '.heic']
+        file_ext = os.path.splitext(file.filename)[1].lower()
+        if file_ext not in valid_extensions:
+            return jsonify({
+                "error": f"Invalid file type '{file_ext}'. Only .jpg, .png, and .heic are allowed."
+            }), 400
+        
         # Get EXIF data from form
         created_at = request.form.get('createdAt', datetime.now().isoformat())
         lat_str = request.form.get('lat')
