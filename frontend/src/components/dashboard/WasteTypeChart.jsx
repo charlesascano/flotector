@@ -1,21 +1,22 @@
-import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
-// Default donut data
-const donutChartData = [
-  { name: 'Plastic', value: 12, color: '#053774', percentage: '28.6%' },
-  { name: 'Pile', value: 22, color: '#FF7043', percentage: '42.9%' },
-  { name: 'Metal', value: 12, color: '#9E9E9E', percentage: '28.6%' },
-  { name: 'Glass', value: 12, color: '#4FC3F7', percentage: '28.6%' },
-  { name: 'Textile', value: 7, color: '#FFC107', percentage: '14.3%' },
-  { name: 'Paper', value: 7, color: '#15A33D', percentage: '14.3%' },
-];
+// Map waste types to specific colors to match your design
+const TYPE_COLORS = {
+  plastic: '#053774',
+  paper: '#15A33D',
+  metal: '#9E9E9E',
+  glass: '#4FC3F7',
+  pile: '#FF7043',
+  textile: '#FFC107',
+  // Fallback colors
+  default: '#CCCCCC'
+};
 
-// Label for donut slices
 const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, payload }) => {
-  if (percent < 0.05) return null;
 
+// Custom label render function
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, payload }) => {
+  if (percent < 0.05) return null; // Hide label if slice is too small (< 5%)
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -36,10 +37,32 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-// Main Component
-export default function WasteTypeChart({ data = donutChartData }) {
-  const sortedData = [...data].sort((a, b) => b.value - a.value);
-  const total = sortedData.reduce((sum, d) => sum + d.value, 0);
+export default function WasteTypeChart({ data }) {
+  // 1. Handle empty data
+  if (!data || data.length === 0) {
+    return (
+      <div className="chart-card-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '300px' }}>
+        <p style={{ color: '#949494' }}>No waste data available</p>
+      </div>
+    );
+  }
+
+  // 2. Calculate Total & Percentages
+  const total = data.reduce((sum, d) => sum + d.value, 0);
+
+  // 3. Process Data (Sort, Color, Percentage)
+  const processedData = [...data]
+    .sort((a, b) => b.value - a.value)
+    .map((item) => {
+      const key = item.name.toLowerCase();
+      return {
+        ...item,
+        // Use mapped color or fallback
+        color: TYPE_COLORS[key] || TYPE_COLORS.default,
+        // Calculate percentage string
+        percentage: total > 0 ? `${((item.value / total) * 100).toFixed(1)}%` : '0%'
+      };
+    });
 
   return (
     <div className="chart-card-container">
@@ -51,7 +74,7 @@ export default function WasteTypeChart({ data = donutChartData }) {
           <ResponsiveContainer>
             <PieChart>
               <Pie
-                data={sortedData}
+                data={processedData}
                 dataKey="value"
                 cx="50%"
                 cy="50%"
@@ -61,8 +84,8 @@ export default function WasteTypeChart({ data = donutChartData }) {
                 labelLine={false}
                 label={renderCustomizedLabel}
               >
-                {sortedData.map((entry, i) => (
-                  <Cell key={i} fill={entry.color} stroke={entry.color} />
+                {processedData.map((entry, i) => (
+                  <Cell key={`cell-${i}`} fill={entry.color} stroke={entry.color} />
                 ))}
               </Pie>
             </PieChart>
@@ -85,11 +108,12 @@ export default function WasteTypeChart({ data = donutChartData }) {
             <span className="legend-cell">Percent</span>
           </div>
 
-          {sortedData.map((entry, i) => (
+          {processedData.map((entry, i) => (
             <div className="legend-row" key={i}>
               <span className="legend-cell legend-type">
                 <span className="legend-color-dot" style={{ backgroundColor: entry.color }} />
-                {entry.name}
+                {/* Capitalize name */}
+                {entry.name.charAt(0).toUpperCase() + entry.name.slice(1)}
               </span>
               <span className="legend-cell">{entry.value}</span>
               <span className="legend-cell">{entry.percentage}</span>

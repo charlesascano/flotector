@@ -7,6 +7,7 @@ import Map from './pages/Map';
 import Results from "./pages/Results";
 import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
+import Catalog from "./pages/Catalog";
 import theme from './theme/theme';
 
 function AppContent() {
@@ -23,6 +24,7 @@ function AppContent() {
         <Route path="/results/:uuid" element={<Results />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/about" element={<About />} />
+        <Route path="/catalog" element={<Catalog />} />
       </Routes>
 
       {/* If background exists, render Results as an overlay */}

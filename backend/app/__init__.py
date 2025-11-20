@@ -20,11 +20,13 @@ def create_app():
     from .results import results_bp
     from .data import data_bp
     from .map import map_bp
+    from .dashboard import dashboard_bp 
 
     # Register your blueprints
     app.register_blueprint(submit_bp)
     app.register_blueprint(results_bp)
     app.register_blueprint(data_bp)
     app.register_blueprint(map_bp)
+    app.register_blueprint(dashboard_bp) 
 
     return app
