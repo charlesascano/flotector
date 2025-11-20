@@ -7,6 +7,7 @@ import uuid
 from datetime import datetime
 import requests
 import os
+import io
 
 # for .heic support
 from pillow_heif import register_heif_opener
@@ -115,7 +116,7 @@ def submit_and_process():
 
         # Imus River location constraints
         if location_data['city'] not in ['Amadeo', 'Bacoor', 'Dasmariñas', 'Imus', 'Kawit', 'Silang', 'Tagaytay City', 'Tagaytay']:
-            error_message = f"Location '{location_data['city']}' is outside the Imus River monitoring service zone."
+            error_message = f"Location '{location_data['address']}' is outside the Imus River monitoring service zone."
             return jsonify({"error": error_message}), 400
         
         # 2. Generate UUID
@@ -124,10 +125,19 @@ def submit_and_process():
         # 3. Upload ORIGINAL image to Supabase Storage
         storage = current_app.supabase.storage
 
-        upload_path = f"Original/{new_uuid}"
-        file_bytes = file.read()
+        # --- CHANGED: Open, Rotate, Strip Metadata, Convert to JPEG ---
+        image = Image.open(file.stream)
+        image = ImageOps.exif_transpose(image) # Bakes orientation into pixels, removes tag
+
+        buffer_io = io.BytesIO()
+        image.convert("RGB").save(buffer_io, format='JPEG', quality=100) # Save creates clean bytes
+        file_bytes = buffer_io.getvalue()
+
+        upload_path = f"Original/{new_uuid}.jpg" # Force .jpg extension
+        # -------------------------------------------------------------
+
         storage.from_("flotector-media").upload(upload_path, file_bytes, {
-            "content-type": file.content_type
+            "content-type": "image/jpeg" # Force content-type
         })
         
         image_url_data = storage.from_("flotector-media").get_public_url(upload_path)
