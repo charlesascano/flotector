@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
 import Catalog from "./pages/Catalog";
 import theme from './theme/theme';
+import ScrollToTop from "./components/ScrollToTop";
 
 function AppContent() {
   const location = useLocation();
@@ -16,6 +17,7 @@ function AppContent() {
 
   return (
     <>
+      <ScrollToTop />
       <Routes location={background || location}>
         <Route path="/" element={<Home />} />
         <Route path="/submit" element={<Submit />} />
