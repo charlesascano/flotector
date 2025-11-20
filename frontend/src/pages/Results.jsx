@@ -127,7 +127,7 @@ export default function Results({ isOverlay = false }) {
 
   // Results Content
   const ResultsContent = () => (
-    <Flex direction="column" bgColor={"#F6F6F6"} px={isOverlay ? 0 : 4} minH={isOverlay ? "100%" : "100vh"} position="relative">
+    <Flex direction="column" bgColor={isOverlay ? "white" : "#F6F6F6"} px={isOverlay ? 0 : 4} minH={isOverlay ? "100%" : "100vh"} position="relative">
       
       {/* If overlay mode: show back button to close the drawer */}
       {isOverlay && (
@@ -151,7 +151,7 @@ export default function Results({ isOverlay = false }) {
       <Flex
         direction={{ base: "column", md: "row" }}
         bgColor={"white"}
-        boxShadow="0px 4px 4px rgba(0,0,0,0.25)"
+        boxShadow={isOverlay ? "none" : "0px 4px 4px rgba(0,0,0,0.25)"}
         borderRadius="35px"
         p={4}
         pb={8}
