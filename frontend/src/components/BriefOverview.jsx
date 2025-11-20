@@ -9,16 +9,17 @@ import {
 } from '@chakra-ui/react';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 import { Link } from 'react-router-dom';
+import { COLORS } from '../constant';
 
 import img from '../assets/watershed-cropped.webp';
 
 const BriefOverview = () => (
-  <Box py={{ base: 12, md: 16, lg: 20 }} px={{ base: 4, md: 8, lg: 12 }} mx="auto" bg="white" overflow="hidden">
+  <Box py={{ base: 12, md: 16, lg: 20 }} px={{ base: 4, md: 8, lg: 12 }} mx="auto" bg={COLORS.bgGray} overflow="hidden">
     <Heading
       fontWeight="600"
       fontSize={{ base: '2xl', md: '4xl', lg: '5xl' }}
       textAlign="center"
-      color="#053774"
+      color={COLORS.darkBlue}
       mb={{ base: 4, md: 6, lg: 8 }}
     >
       Imus River
@@ -28,7 +29,7 @@ const BriefOverview = () => (
       fontSize={{ base: 'sm', md: 'md', lg: 'lg' }}
       textAlign="center"
       mb={{ base: 8, md: 10, lg: 12 }}
-      color="#053774"
+      color={COLORS.darkBlue}
       maxW="2xl"
       mx="auto"
     >
@@ -78,7 +79,7 @@ const BriefOverview = () => (
             </Text>
 
           <Button
-            bg="#053774"
+            bg={COLORS.darkBlue}
             color="white"
             size="md"
             as={Link}
