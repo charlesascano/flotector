@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   Box,
   Flex,
@@ -20,7 +19,7 @@ import { IoOptionsOutline } from 'react-icons/io5';
 import WasteTypeChart from './WasteTypeChart';
 import LocationHotspots from './LocationHotspots';
 
-// BottleIcon Definition
+// BottleIcon Definition (Your SVGs)
 const BottleIcon = (props) => (
   <Icon viewBox="0 0 24 24" {...props}>
     <path
@@ -31,8 +30,17 @@ const BottleIcon = (props) => (
   </Icon>
 );
 
-const WasteAnalytics = ({ overallDetection = 0, wasteType = 'PLASTIC', topHotspot = {}, icons }) => {
-  const [activeFilter, setActiveFilter] = useState('Last 7 days');
+const WasteAnalytics = ({ 
+  overallDetection = 0, 
+  wasteType = 'N/A', 
+  topHotspot = {}, 
+  icons, 
+  donutData, 
+  locationData,
+  currentFilter,   // <--- RECEIVED FROM PARENT
+  onFilterChange   // <--- RECEIVED FROM PARENT
+}) => {
+  
   const filterOptions = ['Today', 'Last 7 days', 'This Month'];
 
   const baseBtnStyle = {
@@ -40,11 +48,13 @@ const WasteAnalytics = ({ overallDetection = 0, wasteType = 'PLASTIC', topHotspo
     fontSize: { base: 'xs', md: 'sm' },
     height: '30px',
   };
-
   const outline = {
     borderColor: '#053774',
     borderWidth: '0.25px',
   };
+
+  // Safety check for wasteType to avoid crashes if undefined
+  const safeWasteType = wasteType || 'N/A';
 
   return (
     <Box w="100%" p={{ base: 4, md: 8 }} bg="#F6F6F6" borderRadius="20px" borderBottom="1px solid #C2C2C2" minH="100vh">
@@ -63,17 +73,20 @@ const WasteAnalytics = ({ overallDetection = 0, wasteType = 'PLASTIC', topHotspo
                   key={option}
                   {...baseBtnStyle}
                   {...outline}
-                  bg={activeFilter === option ? '#053774' : 'white'}
-                  color={activeFilter === option ? 'white' : '#5D5D5D'}
-                  _hover={activeFilter !== option ? { bg: 'gray.50' } : undefined}
+                  // Use Props to determine active state
+                  bg={currentFilter === option ? '#053774' : 'white'}
+                  color={currentFilter === option ? 'white' : '#5D5D5D'}
+                  _hover={currentFilter !== option ? { bg: 'gray.50' } : undefined}
                   borderLeftRadius={idx === 0 ? '8px' : 0}
                   borderRightRadius={idx === filterOptions.length - 1 ? '8px' : 0}
-                  onClick={() => setActiveFilter(option)}
+                  onClick={() => onFilterChange(option)} // Call Parent Function
                 >
                   {option}
                 </Button>
               ))}
             </ButtonGroup>
+            
+            {/* Custom Range Button (Placeholder) */}
             <Button
               {...baseBtnStyle}
               {...outline}
@@ -93,11 +106,11 @@ const WasteAnalytics = ({ overallDetection = 0, wasteType = 'PLASTIC', topHotspo
           <Flex display={{ base: 'flex', lg: 'none' }} w="100%">
             <Menu>
               <MenuButton as={Button} rightIcon={<ChevronDownIcon />} {...baseBtnStyle} bg="#053774" color="white" _hover={{ bg: '#042d5e' }} _active={{ bg: '#042d5e' }}>
-                {activeFilter}
+                {currentFilter}
               </MenuButton>
               <MenuList>
                 {filterOptions.map((option) => (
-                  <MenuItem key={option} onClick={() => setActiveFilter(option)} fontWeight="600" color="#5D5D5D">
+                  <MenuItem key={option} onClick={() => onFilterChange(option)} fontWeight="600" color="#5D5D5D">
                     {option}
                   </MenuItem>
                 ))}
@@ -115,7 +128,8 @@ const WasteAnalytics = ({ overallDetection = 0, wasteType = 'PLASTIC', topHotspo
         {/* Cards */}
         <GridItem>
           <Grid templateColumns="repeat(2, 1fr)" gap={{ base: 3, md: 4 }}>
-            {/* Overall Detection */}
+            
+            {/* Overall Detection Card */}
             <GridItem colSpan={1} display="flex" flexDirection="column" justifyContent="space-between" p={{ base: 4, sm: 5 }} bgGradient="linear(330deg, white -220%, #053774 100%)" boxShadow="0px 4px 4px rgba(0,0,0,0.25)" borderRadius="35px" color="white" minH="150px">
               <Text fontWeight="700" fontSize={{ base: 'calc(8px + 0.6vw)' }} lineHeight="1.2" mb={2}>
                 OVERALL <br /> DETECTION
@@ -125,30 +139,33 @@ const WasteAnalytics = ({ overallDetection = 0, wasteType = 'PLASTIC', topHotspo
               </Text>
             </GridItem>
 
-            {/* Top Waste Type */}
+            {/* Top Waste Type Card */}
             <GridItem colSpan={1} display="flex" flexDirection={{ base: 'column', md: 'row' }} p={{ base: 4, sm: 5 }} bgGradient="linear(149deg, #15A33D 0%, #EFEFEF 200%)" boxShadow="0px 4px 4px rgba(0,0,0,0.25)" borderRadius="35px" color="white" justifyContent={{ base: 'center', md: 'space-between' }} alignItems="center" textAlign={{ base: 'center', md: 'left' }} minH="150px" gap={2}>
               <Flex flexDirection="column" justifyContent="center" alignItems={{ base: 'center', md: 'start' }} textAlign={{ base: 'center', md: 'left' }}>
                 <Text fontSize={{ base: 'calc(6px + 0.4vw)' }} fontWeight="500">TOP WASTE TYPE</Text>
                 <Box mt={{ base: 2, md: 'auto' }}>
-                  <Text fontWeight="700" fontSize={{ base: 'calc(16px + 1vw)' }} lineHeight="1.1">{wasteType.toUpperCase()}</Text>
+                  <Text fontWeight="700" fontSize={{ base: 'calc(16px + 1vw)' }} lineHeight="1.1">{safeWasteType.toUpperCase()}</Text>
+                  {/* Note: "80%" is currently hardcoded. You could calculate this dynamically if desired */}
                   <Text fontSize={{ base: '10px', sm: 'xs' }} pt={1} lineHeight="1.1">
-                    represents <Text as="span" fontWeight="700">80%</Text> of detections
+                     Most detected
                   </Text>
                 </Box>
               </Flex>
               <Box boxSize={{ base: 10, sm: 12, md: 16, lg: 24 }}>
-                {icons?.[wasteType] || <BottleIcon w="100%" h="100%" />}
+                {icons?.[safeWasteType.toLowerCase()] || <BottleIcon w="100%" h="100%" />}
               </Box>
             </GridItem>
 
-            {/* Top Hotspot */}
+            {/* Top Hotspot Card */}
             <GridItem colSpan={2} display="flex" alignItems="center" p={{ base: 4, sm: 5 }} bgGradient="linear(150deg, white 24%, #053774 270%)" boxShadow="0px 4px 4px rgba(0,0,0,0.25)" borderRadius="35px" border="1px solid #DCDCDC" gap={4}>
               <Flex direction="column" textAlign="left" flex="1">
                 <Text color="#5D5D5D" fontSize={{ base: 'xs' }} fontWeight="500">TOP HOTSPOT</Text>
                 <Box>
-                  <Text fontWeight="700" fontSize={{ base: 'md', md: 'lg' }} color="#053774">{topHotspot.name || 'BRGY. NAME'}</Text>
+                  <Text fontWeight="700" fontSize={{ base: 'md', md: 'lg' }} color="#053774">
+                    {topHotspot.barangay ? `${topHotspot.barangay}, ${topHotspot.city}` : 'No Data'}
+                  </Text>
                   <Text fontSize={{ base: 'xs', md: 'sm' }} color="#053774">
-                    is the most reported area with <Text as="span" fontWeight="700">{topHotspot.reports || 0}</Text> reports
+                    is the most reported area with <Text as="span" fontWeight="700">{topHotspot.detections || 0}</Text> detections
                   </Text>
                 </Box>
               </Flex>
@@ -159,13 +176,14 @@ const WasteAnalytics = ({ overallDetection = 0, wasteType = 'PLASTIC', topHotspo
           </Grid>
         </GridItem>
 
-        {/* Charts */}
+        {/* Donut Chart */}
         <GridItem>
-          <WasteTypeChart />
+          <WasteTypeChart data={donutData} />
         </GridItem>
 
+        {/* Location Hotspots Chart (We'll fix this file next!) */}
         <GridItem colSpan={{ base: 1, xl: 2 }}>
-          <LocationHotspots />
+          <LocationHotspots data={locationData} />
         </GridItem>
       </Grid>
     </Box>

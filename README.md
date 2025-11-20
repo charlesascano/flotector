@@ -15,6 +15,7 @@ For first time:
     - 'npm install' to install
 
 3. Create file in the backend folder named ".env" and input API keys (ask from team leader)
+
 4. Create file in the frontend folder named ".env" and input API keys (ask from team leader)
 
 Run web app

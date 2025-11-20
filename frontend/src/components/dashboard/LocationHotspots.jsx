@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   BarChart,
   Bar,
@@ -8,7 +8,6 @@ import {
   ResponsiveContainer,
   LabelList,
 } from 'recharts';
-
 import {
   Box,
   Text,
@@ -23,89 +22,6 @@ import {
   Heading,
 } from '@chakra-ui/react';
 
-/* ---------------- Data ---------------- */
-const locationData = [
-  {
-    name: 'Imus',
-    value: 214,
-    topBarangays: [
-      { name: 'Malagasang I-D', reports: 22 },
-      { name: 'Anabu II-F', reports: 12 },
-      { name: 'Alapan I-A', reports: 12 },
-      { name: 'Medicion I-A', reports: 12 },
-      { name: 'Pag-asa III', reports: 7 },
-    ],
-  },
-  {
-    name: 'Bacoor',
-    value: 120,
-    topBarangays: [
-      { name: 'Molino III', reports: 30 },
-      { name: 'Molino IV', reports: 25 },
-      { name: 'Zapote V', reports: 20 },
-      { name: 'Talaba IV', reports: 18 },
-      { name: 'Niog II', reports: 15 },
-    ],
-  },
-  {
-    name: 'Dasmarinas',
-    value: 65,
-    topBarangays: [
-      { name: 'Salitran I', reports: 15 },
-      { name: 'Burol Main', reports: 12 },
-      { name: 'Paliparan II', reports: 10 },
-      { name: 'San Agustin I', reports: 8 },
-      { name: 'Langkaan II', reports: 7 },
-    ],
-  },
-  {
-    name: 'Silang',
-    value: 32,
-    topBarangays: [
-      { name: 'Biga I', reports: 9 },
-      { name: 'Poblacion I', reports: 7 },
-      { name: 'Biluso', reports: 5 },
-      { name: 'Mataas na Burol', reports: 4 },
-      { name: 'Kabigting', reports: 3 },
-    ],
-  },
-  {
-    name: 'Tagaytay',
-    value: 12,
-    topBarangays: [
-      { name: 'Mendez Crossing', reports: 5 },
-      { name: 'Maharlika East', reports: 3 },
-      { name: 'Kaybagal South', reports: 2 },
-      { name: 'Asisan', reports: 1 },
-      { name: 'Tolentino West', reports: 1 },
-    ],
-  },
-  {
-    name: 'Amadeo',
-    value: 8,
-    topBarangays: [
-      { name: 'Poblacion I', reports: 3 },
-      { name: 'Poblacion II', reports: 2 },
-      { name: 'Poblacion III', reports: 1 },
-      { name: 'Poblacion IV', reports: 1 },
-      { name: 'Maymangga', reports: 1 },
-    ],
-  },
-  {
-    name: 'Kawit',
-    value: 5,
-    topBarangays: [
-      { name: 'Poblacion', reports: 2 },
-      { name: 'Kaingen', reports: 1 },
-      { name: 'Marulas', reports: 1 },
-      { name: 'Panamitan', reports: 1 },
-      { name: 'Wakas II', reports: 1 },
-    ],
-  },
-];
-
-const sortedLocationData = [...locationData].sort((a, b) => b.value - a.value);
-
 /* ---------------- Colors ---------------- */
 const COLOR_SELECTED = '#15A33D';
 const COLOR_LIGHT = '#A3A3A3';
@@ -113,18 +29,44 @@ const COLOR_DARK = '#5D5D5D';
 
 /* ---------------- Barangay List Styles ---------------- */
 const brgyHeader = {
-  fontSize:{base: "calc(10px + 1vw)", md: "calc(14px + 0.5vw)"},
+  fontSize: { base: "calc(10px + 1vw)", md: "calc(14px + 0.5vw)" },
   fontWeight: 700,
   textTransform: 'uppercase',
   as: 'span'
-}
+};
 
 const brgyTable = {
-  fontSize:{base: "calc(6px + 1vw)", md: "calc(8px + 0.5vw)"}
-}
+  fontSize: { base: "calc(6px + 1vw)", md: "calc(8px + 0.5vw)" }
+};
 
-/* ---------------- Barangay List ---------------- */
+/* ---------------- Barangay List Component ---------------- */
 function TopBarangayList({ city }) {
+  // 1. Safety Check: If no nested barangays, show placeholder
+  if (!city.topBarangays || city.topBarangays.length === 0) {
+    return (
+      <Box
+        borderLeft="12px solid #15A33D"
+        borderRadius="8px"
+        outline="1px solid rgba(0, 0, 0, 0.2)"
+        p="24px"
+        bg="white"
+      >
+        <Box mb="10px">
+          <Text sx={brgyHeader} color="#5D5D5D" letterSpacing="1px" mr="0.5em">
+            {city.name}
+          </Text>
+        </Box>
+        <Text fontSize="sm" color="gray.500" fontStyle="italic">
+          Detailed barangay breakdown is not currently available for this city.
+        </Text>
+        <Text fontSize="xs" color="gray.400" mt={2}>
+          (Total Detections: {city.value})
+        </Text>
+      </Box>
+    );
+  }
+
+  // 2. If data exists, sort and render
   const rows = [...city.topBarangays].sort((a, b) => b.reports - a.reports);
 
   return (
@@ -133,20 +75,13 @@ function TopBarangayList({ city }) {
       borderRadius="8px"
       outline="1px solid rgba(0, 0, 0, 0.2)"
       p="12px 24px 12px 12px"
+      bg="white"
     >
       <Box mb="10px">
-        <Text
-          sx={brgyHeader}
-          color="#5D5D5D"
-          letterSpacing="1px"
-          mr="0.5em"
-        >
+        <Text sx={brgyHeader} color="#5D5D5D" letterSpacing="1px" mr="0.5em">
           Top 5 Barangays
         </Text>
-        <Text
-          sx={brgyHeader}
-          color="#15A33D"
-        >
+        <Text sx={brgyHeader} color="#15A33D">
           in {city.name}
         </Text>
       </Box>
@@ -159,7 +94,7 @@ function TopBarangayList({ city }) {
                 Barangay
               </Th>
               <Th
-                sx={brgyTable} 
+                sx={brgyTable}
                 color="#737373"
                 fontWeight="700"
                 textAlign="right"
@@ -189,23 +124,54 @@ function TopBarangayList({ city }) {
 }
 
 /* ---------------- Main Component ---------------- */
-export default function LocationHotspots() {
-  const [selectedCity, setSelectedCity] = useState(sortedLocationData[0]);
-  const chartHeight = sortedLocationData.length * 40;
+export default function LocationHotspots({ data }) {
+  // 1. Handle incoming data (Prop from Parent)
+  // Ensure we always have an array to prevent crashes
+  const safeData = data || [];
+  
+  // 2. Sort data descending by value
+  const sortedLocationData = [...safeData].sort((a, b) => b.value - a.value);
+
+  // 3. State for the selected city (Right Panel)
+  const [selectedCity, setSelectedCity] = useState(null);
+
+  // 4. Auto-select the first city when data loads
+  useEffect(() => {
+    if (sortedLocationData.length > 0 && !selectedCity) {
+      setSelectedCity(sortedLocationData[0]);
+    } else if (sortedLocationData.length > 0 && selectedCity) {
+        // If data refreshes, check if selectedCity is still valid, else reset
+        const stillExists = sortedLocationData.find(c => c.name === selectedCity.name);
+        if (!stillExists) setSelectedCity(sortedLocationData[0]);
+    }
+  }, [sortedLocationData, selectedCity]);
+
+  // Dynamic chart height based on number of cities
+  const chartHeight = Math.max(sortedLocationData.length * 50, 300);
+
+  // If absolutely no data, show empty state
+  if (sortedLocationData.length === 0) {
+      return (
+        <Box p={4} textAlign="center" color="gray.500">
+            <Heading as="h3" size="md" mb={2}>Location Hotspots</Heading>
+            <Text>No location data available for this period.</Text>
+        </Box>
+      );
+  }
 
   return (
     <div className="chart-card-container">
-        <Heading
-          as="h2"
-          color="#053774"
-          fontSize="32px"
-          fontWeight="600"
-          letterSpacing="1px"
-          mb={4}
+      <Heading
+        as="h2"
+        color="#053774"
+        fontSize="32px"
+        fontWeight="600"
+        letterSpacing="1px"
+        mb={4}
       >
         LOCATION HOTSPOTS
       </Heading>
-      
+
       {/* Subheading */}
       <h3 className="chart-title" style={{ marginBottom: '0.25rem', fontSize: '16px' }}>
         By City / Municipality
@@ -214,12 +180,13 @@ export default function LocationHotspots() {
       {/* Description */}
       <Text
         as="p"
-        fontsize="sm"
+        fontSize="sm"
         fontStyle="italic"
         color="#053774"
         mb="2"
-        className="chart-subtitle">
-        Click a city to view its top barangays.
+        className="chart-subtitle"
+      >
+        Click a city to view details.
       </Text>
 
       <Flex direction={{ base: 'column', md: 'row' }} gap={8} align="flex-start" mt={4}>
@@ -229,6 +196,7 @@ export default function LocationHotspots() {
           borderRadius="8px"
           outline="1px solid #C2C2C2"
           py={4}
+          bg="white"
         >
           <ResponsiveContainer width="100%" height={chartHeight}>
             <BarChart
@@ -243,10 +211,16 @@ export default function LocationHotspots() {
                 axisLine={false}
                 tickLine={false}
                 tick={{ fill: '#5D5D5D', fontSize: 12, fontWeight: 700 }}
-                width={80}
+                width={100} // Increased width for longer city names
               />
 
-              <Bar dataKey="value" barSize={24} radius={4} onClick={setSelectedCity}>
+              <Bar 
+                dataKey="value" 
+                barSize={24} 
+                radius={4} 
+                onClick={(data) => setSelectedCity(data)}
+                style={{ cursor: 'pointer' }}
+              >
                 <LabelList
                   dataKey="value"
                   position="right"
@@ -256,15 +230,14 @@ export default function LocationHotspots() {
                 />
                 {sortedLocationData.map((entry, i) => (
                   <Cell
-                    key={entry.name}
+                    key={`cell-${i}`}
                     fill={
-                      entry.name === selectedCity.name
+                      selectedCity && entry.name === selectedCity.name
                         ? COLOR_SELECTED
                         : i % 2
                         ? COLOR_DARK
                         : COLOR_LIGHT
                     }
-                    style={{ cursor: 'pointer' }}
                   />
                 ))}
               </Bar>
@@ -274,7 +247,7 @@ export default function LocationHotspots() {
 
         {/* Right List */}
         <Box w={{ base: '100%', md: '40%' }}>
-          <TopBarangayList city={selectedCity} />
+          {selectedCity && <TopBarangayList city={selectedCity} />}
         </Box>
       </Flex>
     </div>
