@@ -99,3 +99,61 @@ def get_dashboard_summary():
         current_app.logger.error(f"Failed to retrieve dashboard data: {e}")
         return jsonify({"error": "Failed to retrieve dashboard data."}), 500
 
+# Daily submissions
+def execute_daily_submissions_query(app, start_date, end_date):
+    """
+    Executes the get_daily_submissions RPC.
+    """
+    try:
+        # 1. Prepare parameters using ISO format strings
+        params = {
+            'start_date_param': start_date.isoformat(),
+            'end_date_param': end_date.isoformat()
+        }
+        
+        # 2. Call the specific RPC for daily submissions
+        response = app.supabase.rpc('get_daily_submissions', params).execute()
+
+        # The result of a function that RETURNS TABLE is typically a list of dicts.
+        return response.data
+
+    except APIError as e:
+        current_app.logger.error(f"Supabase API Error for daily submissions: {e.message}")
+        raise
+    except Exception as e:
+        current_app.logger.error(f"General Query Error for daily submissions: {e}")
+        raise
+@dashboard_bp.route('/daily-submissions', methods=['GET'])
+def get_daily_submissions_route():
+    """
+    API endpoint to fetch daily submission counts within a date range.
+    Expected URL: /api/dashboard/daily-submissions?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
+    """
+    start_date_str = request.args.get('startDate')
+    end_date_str = request.args.get('endDate')
+
+    if not start_date_str or not end_date_str:
+        return jsonify({"error": "Missing startDate or endDate parameter"}), 400
+
+    try:
+        # Convert string dates to datetime.date objects for the RPC call
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+    except ValueError:
+        return jsonify({"error": "Date format must be YYYY-MM-DD"}), 400
+
+    try:
+        # Call the new execution function
+        daily_data = execute_daily_submissions_query(current_app, start_date, end_date)
+
+        # 3. Format the data for a clean response (optional, but recommended)
+        # The data will be a list of dictionaries like: 
+        # [{'submission_date': '2025-01-01', 'submission_count': 10}, ...]
+
+        current_app.logger.info(f"Returning daily submissions data: {daily_data}")
+        
+        return jsonify({"data": daily_data}), 200
+
+    except Exception:
+        # The exception is already logged in the execute function
+        return jsonify({"error": "Failed to retrieve daily submission data."}), 500
