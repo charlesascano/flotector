@@ -9,7 +9,7 @@ import {
 import SubmissionsGraph from "./SubmissionsGraph";
 import DateFilter from "../DateFilter";
 
-const SubmissionsAnalytics = ({ totalSubmissions, graphData, data=null, currentFilter, filterChange }) => (
+const SubmissionsAnalytics = ({ totalSubmissions, graphData, data=null, currentFilter, onFilterChange }) => (
   <Box w="100%" p={{ base: 4, md: 8 }} bg="#F6F6F6" borderRadius="20px" borderBottom="1px solid #C2C2C2">
 
     {/* Section Heading */}
@@ -17,7 +17,7 @@ const SubmissionsAnalytics = ({ totalSubmissions, graphData, data=null, currentF
       <Heading color="#053774" fontWeight="700" fontSize={{ base: "2xl", sm: "3xl", md: "40px" }}>
         Submissions Analytics
       </Heading>
-      <DateFilter currentFilter={currentFilter} onFilterChange={filterChange} />
+      <DateFilter currentFilter={currentFilter} onFilterChange={onFilterChange} />
     </Flex>
 
     <Grid
