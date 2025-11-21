@@ -22,12 +22,12 @@ import LocationHotspots from './LocationHotspots';
 
 const WasteAnalytics = ({ 
   overallDetection = 0, 
-  wasteType = 'N/A', 
+  data=null,
   topHotspot = {}, 
   donutData, 
   locationData,
-  currentFilter,   // <--- RECEIVED FROM PARENT
-  onFilterChange   // <--- RECEIVED FROM PARENT
+  currentFilter,
+  onFilterChange
 }) => {
   
   const filterOptions = ['Today', 'Last 7 days', 'This Month'];
@@ -43,7 +43,7 @@ const WasteAnalytics = ({
   };
 
   // Safety check for wasteType to avoid crashes if undefined
-  const safeWasteType = wasteType || 'N/A';
+  const safeWasteType = data?.highest_class_count || 'N/A';
 
   // Helper function to get dynamic icon
   const getDynamicIcon = (type) => {
@@ -140,7 +140,7 @@ const WasteAnalytics = ({
                 OVERALL <br /> DETECTION
               </Text>
               <Text fontWeight="700" fontSize={{ base: '2rem', md: '2.5rem' }} lineHeight="1" textAlign="right">
-                {overallDetection}
+                {data?.total_detections_all_time}
               </Text>
             </GridItem>
 
@@ -166,14 +166,14 @@ const WasteAnalytics = ({
                 <Text color="#5D5D5D" fontSize={{ base: 'xs' }} fontWeight="500">TOP HOTSPOT</Text>
                 <Box>
                   <Text fontWeight="700" fontSize={{ base: 'md', md: 'lg' }} color="#053774">
-                    {topHotspot.barangay ? `${topHotspot.barangay}, ${topHotspot.city}` : 'No Data'}
+                    {data?.highest_barangay_total?.total_count ? `${data.highest_barangay_total.barangay}, ${data.highest_barangay_total.city} ` : 'No Data'}
                   </Text>
 
                   <Text fontSize={{ base: 'xs', md: 'sm' }} color="#053774">
-                    {topHotspot?.barangay && topHotspot?.detections > 0 ? (
+                    {data?.highest_barangay_total?.total_count > 0 ? (
                       <>
                         is the most reported area with{' '}
-                        <Text as="span" fontWeight="700">{topHotspot.detections}</Text> detections
+                        <Text as="span" fontWeight="700">{data?.highest_barangay_total?.total_count}</Text> detections
                       </>
                     ) : (
                       "No reported detections yet"
@@ -188,12 +188,12 @@ const WasteAnalytics = ({
 
         {/* Donut Chart */}
         <GridItem>
-          <WasteTypeChart data={donutData} />
+          <WasteTypeChart data={data?.all_class_counts} />
         </GridItem>
 
         {/* Location Hotspots Chart (We'll fix this file next!) */}
         <GridItem colSpan={{ base: 1, xl: 2 }}>
-          <LocationHotspots data={locationData} />
+          <LocationHotspots brgy_per_city={data?.top_barangays_per_city} city_totals={data?.totals_per_city} />
         </GridItem>
       </Grid>
     </Box>

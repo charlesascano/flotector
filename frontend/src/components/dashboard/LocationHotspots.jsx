@@ -40,9 +40,9 @@ const brgyTable = {
 };
 
 /* ---------------- Barangay List Component ---------------- */
-function TopBarangayList({ city }) {
+function TopBarangayList({ selected_city, brgy_list=[] }) {
   // 1. Safety Check: If no nested barangays, show placeholder
-  if (!city.topBarangays || city.topBarangays.length === 0) {
+  if (!brgy_list || brgy_list.length === 0) {
     return (
       <Box
         borderLeft="12px solid #15A33D"
@@ -53,21 +53,21 @@ function TopBarangayList({ city }) {
       >
         <Box mb="10px">
           <Text sx={brgyHeader} color="#5D5D5D" letterSpacing="1px" mr="0.5em">
-            {city.name}
+            {selected_city.city ? selected_city.city : "Please Select a City"}
           </Text>
         </Box>
         <Text fontSize="sm" color="gray.500" fontStyle="italic">
           Detailed barangay breakdown is not currently available for this city.
         </Text>
         <Text fontSize="xs" color="gray.400" mt={2}>
-          (Total Detections: {city.value})
+          (Total Detections: {selected_city.total_count})
         </Text>
       </Box>
     );
   }
 
   // 2. If data exists, sort and render
-  const rows = [...city.topBarangays].sort((a, b) => b.reports - a.reports);
+  // const rows = [...city.topBarangays].sort((a, b) => b.reports - a.reports);
 
   return (
     <Box
@@ -82,7 +82,7 @@ function TopBarangayList({ city }) {
           Top 5 Barangays
         </Text>
         <Text sx={brgyHeader} color="#15A33D">
-          in {city.name}
+          in {selected_city.city}
         </Text>
       </Box>
 
@@ -106,13 +106,13 @@ function TopBarangayList({ city }) {
           </Thead>
 
           <Tbody>
-            {rows.map((b) => (
-              <Tr key={b.name}>
+            {brgy_list.map((b) => (
+              <Tr key={b.barangay}>
                 <Td sx={brgyTable} color="#404040" pl="0">
-                  {b.name}
+                  {b.barangay}
                 </Td>
                 <Td sx={brgyTable} color="#0A0A0A" fontWeight="700" textAlign="right">
-                  {b.reports}
+                  {b.total_detections}
                 </Td>
               </Tr>
             ))}
@@ -124,33 +124,48 @@ function TopBarangayList({ city }) {
 }
 
 /* ---------------- Main Component ---------------- */
-export default function LocationHotspots({ data }) {
-  // 1. Handle incoming data (Prop from Parent)
-  // Ensure we always have an array to prevent crashes
-  const safeData = data || [];
+export default function LocationHotspots({ brgy_per_city=[], city_totals=[] }) {
+
+  const [selectedCity, setSelectedCity] = useState(city_totals ? city_totals[0]?.city : null);
+  // 1. DEFINE YOUR TARGET CITIES
+  const TARGET_CITIES = [
+    "Amadeo",
+    "Bacoor",
+    "Dasmariñas", 
+    "Imus", 
+    "Kawit", 
+    "Silang",
+    "Tagaytay City", 
+  ];
+
+  // 2. NORMALIZE DATA (Merge fixed list with API data)
+  const chartData = TARGET_CITIES.map(cityName => {
+    // Check if this city exists in the props data
+    const existingData = city_totals.find(item => item.city === cityName);
+    
+    // If it exists, use it. If not, create a 0 count object.
+    return existingData || { city: cityName, total_count: 0 };
+  }).sort((a, b) => b.total_count - a.total_count);
   
-  // 2. Sort data descending by value
-  const sortedLocationData = [...safeData].sort((a, b) => b.value - a.value);
-
-  // 3. State for the selected city (Right Panel)
-  const [selectedCity, setSelectedCity] = useState(null);
-
   // 4. Auto-select the first city when data loads
-  useEffect(() => {
-    if (sortedLocationData.length > 0 && !selectedCity) {
-      setSelectedCity(sortedLocationData[0]);
-    } else if (sortedLocationData.length > 0 && selectedCity) {
-        // If data refreshes, check if selectedCity is still valid, else reset
-        const stillExists = sortedLocationData.find(c => c.name === selectedCity.name);
-        if (!stillExists) setSelectedCity(sortedLocationData[0]);
-    }
-  }, [sortedLocationData, selectedCity]);
+  // useEffect(() => {
+  //   if (chartData.length > 0 && !selectedCity) {
+  //     setSelectedCity(chartData[0]);
+  //   } else if (chartData.length > 0 && selectedCity) {
+  //       const stillExists = chartData.find(c => c.city === selectedCity.city);
+  //       if (!stillExists) setSelectedCity(chartData[0]);
+  //   }
+  // }, [selectedCity, chartData]); // Dependency updated
 
   // Dynamic chart height based on number of cities
-  const chartHeight = Math.max(sortedLocationData.length * 50, 300);
+  const chartHeight = Math.max(chartData.length * 50, 300);
 
+  // Calculate filtered barangays for the Right Panel
+  const selectedCityBarangays = selectedCity 
+  ? brgy_per_city.filter(b => b.city === selectedCity.city)
+  : [];
   // If absolutely no data, show empty state
-  if (sortedLocationData.length === 0) {
+  if (city_totals.length === 0) {
       return (
         <Box p={4} textAlign="center" color="gray.500">
             <Heading as="h3" size="md" mb={2}>Location Hotspots</Heading>
@@ -161,78 +176,72 @@ export default function LocationHotspots({ data }) {
 
   return (
     <div className="chart-card-container">
+      {/* ... Headings ... */}
       <Heading
-        as="h2"
-        color="#053774"
-        fontSize="32px"
-        fontWeight="600"
-        letterSpacing="1px"
+        as='h2'
+        color='#053774'
+        fontSize={'32px'}
+        fontWeight={'600'}
+        letterSpacing={'1px'}
         mb={4}
       >
         LOCATION HOTSPOTS
       </Heading>
-
       {/* Subheading */}
       <h3 className="chart-title" style={{ marginBottom: '0.25rem', fontSize: '16px' }}>
         By City / Municipality
       </h3>
-
+      
       {/* Description */}
       <Text
         as="p"
-        fontSize="sm"
+        fontsize="sm"
         fontStyle="italic"
         color="#053774"
         mb="2"
-        className="chart-subtitle"
-      >
-        Click a city to view details.
+        className="chart-subtitle">
+        Click a city to view its top barangays.
       </Text>
-
+      
       <Flex direction={{ base: 'column', md: 'row' }} gap={8} align="flex-start" mt={4}>
-        {/* Left Chart */}
-        <Box
-          w={{ base: '100%', md: '60%' }}
-          borderRadius="8px"
-          outline="1px solid #C2C2C2"
-          py={4}
-          bg="white"
-        >
+        <Box w={{ base: '100%', md: '60%' }} borderRadius="8px" outline="1px solid #C2C2C2" py={4} bg="white">
+          
           <ResponsiveContainer width="100%" height={chartHeight}>
+            {/* 5. PASS 'chartData' TO THE CHART */}
             <BarChart
-              data={sortedLocationData}
+              data={chartData} 
               layout="vertical"
               margin={{ top: 0, right: 40, left: 20, bottom: 0 }}
             >
               <XAxis type="number" hide />
               <YAxis
-                dataKey="name"
+                dataKey="city"
                 type="category"
                 axisLine={false}
                 tickLine={false}
                 tick={{ fill: '#5D5D5D', fontSize: 12, fontWeight: 700 }}
-                width={100} // Increased width for longer city names
+                width={100}
               />
-
               <Bar 
-                dataKey="value" 
+                dataKey="total_count" 
                 barSize={24} 
                 radius={4} 
                 onClick={(data) => setSelectedCity(data)}
                 style={{ cursor: 'pointer' }}
               >
                 <LabelList
-                  dataKey="value"
+                  dataKey="total_count"
                   position="right"
                   fill="#5D5D5D"
                   fontSize={10}
                   fontWeight="700"
                 />
-                {sortedLocationData.map((entry, i) => (
+                {/* 6. ITERATE OVER 'chartData' FOR CELLS */}
+                {chartData.map((entry, i) => (
                   <Cell
                     key={`cell-${i}`}
                     fill={
-                      selectedCity && entry.name === selectedCity.name
+                      selectedCity && entry.city === selectedCity.city
                         ? COLOR_SELECTED
                         : i % 2
                         ? COLOR_DARK
@@ -245,9 +254,8 @@ export default function LocationHotspots({ data }) {
           </ResponsiveContainer>
         </Box>
 
-        {/* Right List */}
         <Box w={{ base: '100%', md: '40%' }}>
-          {selectedCity && <TopBarangayList city={selectedCity} />}
+          {selectedCity && <TopBarangayList selected_city={selectedCity} brgy_list={selectedCityBarangays} />}
         </Box>
       </Flex>
     </div>
