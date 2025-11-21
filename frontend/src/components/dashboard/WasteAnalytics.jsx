@@ -168,14 +168,20 @@ const WasteAnalytics = ({
                   <Text fontWeight="700" fontSize={{ base: 'md', md: 'lg' }} color="#053774">
                     {topHotspot.barangay ? `${topHotspot.barangay}, ${topHotspot.city}` : 'No Data'}
                   </Text>
+
                   <Text fontSize={{ base: 'xs', md: 'sm' }} color="#053774">
-                    is the most reported area with <Text as="span" fontWeight="700">{topHotspot.detections || 0}</Text> detections
+                    {topHotspot?.barangay && topHotspot?.detections > 0 ? (
+                      <>
+                        is the most reported area with{' '}
+                        <Text as="span" fontWeight="700">{topHotspot.detections}</Text> detections
+                      </>
+                    ) : (
+                      "No reported detections yet"
+                    )}
                   </Text>
+
                 </Box>
               </Flex>
-              <Button size="sm" bg="#053774" color="white" fontWeight="700" borderRadius="6px" _hover={{ bg: '#042e61' }}>
-                View
-              </Button>
             </GridItem>
           </Grid>
         </GridItem>
