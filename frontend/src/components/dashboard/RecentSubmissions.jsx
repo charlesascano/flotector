@@ -152,7 +152,7 @@ export const RecentSubmissions = () => {
                       {new Date(entry.uploaded_at).toLocaleDateString()}
                     </Td>
                     <Td {...cell} whiteSpace="normal">
-                      {formatLocation(entry.lat, entry.lng)}
+                      {`${entry.barangay}, ${entry.city}`}
                     </Td>
                     <Td {...cell} textAlign="center">
                       <Text
