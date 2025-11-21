@@ -13,28 +13,17 @@ import {
   MenuItem,
   Text,
 } from '@chakra-ui/react';
-import { ChevronDownIcon } from '@chakra-ui/icons';
+import { ChevronDownIcon, QuestionIcon } from '@chakra-ui/icons';
 import { IoOptionsOutline } from 'react-icons/io5';
 
+import { CATALOG_DATA } from '../catalog/CatalogData';
 import WasteTypeChart from './WasteTypeChart';
 import LocationHotspots from './LocationHotspots';
-
-// BottleIcon Definition (Your SVGs)
-const BottleIcon = (props) => (
-  <Icon viewBox="0 0 24 24" {...props}>
-    <path
-      fill="currentColor"
-      d="M18,2H6C4.9,2,4,2.9,4,4V9.3C3.4,9.8,3,10.6,3,11.5V20c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V11.5
-         c0-0.9-0.4-1.7-1-2.2V4C20,2.9,19.1,2,18,2z M6,4h12v5H6V4z M19,20H5V11.5C5,11.8,5.2,12,5.5,12h13c0.3,0,0.5-0.2,0.5-0.5V20z"
-    />
-  </Icon>
-);
 
 const WasteAnalytics = ({ 
   overallDetection = 0, 
   wasteType = 'N/A', 
   topHotspot = {}, 
-  icons, 
   donutData, 
   locationData,
   currentFilter,   // <--- RECEIVED FROM PARENT
@@ -55,6 +44,22 @@ const WasteAnalytics = ({
 
   // Safety check for wasteType to avoid crashes if undefined
   const safeWasteType = wasteType || 'N/A';
+
+  // Helper function to get dynamic icon
+  const getDynamicIcon = (type) => {
+      if (!type || type === 'N/A') return QuestionIcon;
+      
+      // Find the object in your catalog where title matches the type (case-insensitive)
+      const found = CATALOG_DATA.find(
+        (item) => item.title.toLowerCase() === type.toLowerCase()
+      );
+
+      // Return the icon component found, or fallback to default icon
+      return found ? found.icon : QuestionIcon;
+    };
+
+    // Determines what icon to render depending on top waste type
+  const ActiveIcon = getDynamicIcon(safeWasteType);
 
   return (
     <Box w="100%" p={{ base: 4, md: 8 }} bg="#F6F6F6" borderRadius="20px" borderBottom="1px solid #C2C2C2" minH="100vh">
@@ -145,15 +150,14 @@ const WasteAnalytics = ({
                 <Text fontSize={{ base: 'calc(6px + 0.4vw)' }} fontWeight="500">TOP WASTE TYPE</Text>
                 <Box mt={{ base: 2, md: 'auto' }}>
                   <Text fontWeight="700" fontSize={{ base: 'calc(16px + 1vw)' }} lineHeight="1.1">{safeWasteType.toUpperCase()}</Text>
-                  {/* Note: "80%" is currently hardcoded. You could calculate this dynamically if desired */}
-                  <Text fontSize={{ base: '10px', sm: 'xs' }} pt={1} lineHeight="1.1">
-                     Most detected
-                  </Text>
                 </Box>
               </Flex>
-              <Box boxSize={{ base: 10, sm: 12, md: 16, lg: 24 }}>
-                {icons?.[safeWasteType.toLowerCase()] || <BottleIcon w="100%" h="100%" />}
+              
+              {/* Icon render */}
+              <Box boxSize={{ base: 10, sm: 12, md: 12, lg: 16 }}>
+                 <Icon as={ActiveIcon} w="100%" h="100%" />
               </Box>
+
             </GridItem>
 
             {/* Top Hotspot Card */}
