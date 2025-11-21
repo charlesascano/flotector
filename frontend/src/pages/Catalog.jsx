@@ -10,6 +10,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
+import Layout from "../components/Layout";
 
 import HeroSection from "../components/catalog/catHero";
 import FilterBar from "../components/catalog/CatFilter";
@@ -42,7 +43,9 @@ export default function Catalog() {
   });
 
   return (
-    <Box bg={COLORS.bgGray} minH="100vh" w="100%" overflowX="hidden">
+
+    <Layout>
+          <Box bg={COLORS.bgGray} minH="100vh" w="100%" overflowX="hidden">
       <HeroSection />
 
       <Container
@@ -101,5 +104,6 @@ export default function Catalog() {
         )}
       </Container>
     </Box>
+    </Layout>
   );
 }

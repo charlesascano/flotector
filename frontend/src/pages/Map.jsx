@@ -3,6 +3,7 @@ import { Box, Spinner, HStack, Button, Select } from "@chakra-ui/react";
 import Map, { Marker, NavigationControl } from 'react-map-gl/mapbox';
 import { useNavigate, useLocation } from 'react-router-dom';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import Layout from '../components/Layout';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -100,9 +101,9 @@ export default function MapPage() {
   );
 
   return (
-    <Box h="100vh" w="100%" position="relative">
+    <Layout>
+      <Box h="100vh" w="100%" position="relative">
       <FilterMenu />
-      
       <Box position="absolute" top="0" left="0" right="0" bottom="0">
         <Map
           // 2. USE THE DYNAMIC INITIAL VIEW
@@ -164,5 +165,6 @@ export default function MapPage() {
         </Map>
       </Box>
     </Box>
+    </Layout>
   );
 }
