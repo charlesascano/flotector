@@ -21,11 +21,15 @@ export const RecentSubmissions = () => {
   const toast = useToast();
   const location = useLocation();
 
+  function getUrl() {
+    return import.meta.env.VITE_FLOTECTOR_API || "http://localhost:5000";
+  }
+
   useEffect(() => {
     const fetchRecentData = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("http://localhost:5000/api/data?page=1&limit=5");
+        const response = await fetch(`${getUrl()}/api/data?page=1&limit=5`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
         const result = await response.json();

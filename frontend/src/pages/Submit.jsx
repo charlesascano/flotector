@@ -17,6 +17,10 @@ export default function Submit() {
   const toast = useToast();
   const navigate = useNavigate();
 
+  function getUrl() {
+    return import.meta.env.VITE_FLOTECTOR_API || "http://localhost:5000";
+  }
+
   const handleFileChange = (e) => setFile(e.target.files[0]);
 
   const handleClear = () => {
@@ -25,7 +29,7 @@ export default function Submit() {
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  
   const handleSubmit = async () => {
     if (!file) {
       toast({
@@ -67,7 +71,7 @@ export default function Submit() {
       formData.append('fileName', file.name);
 
       // 3. Send FormData to the backend
-      const response = await fetch(`http://localhost:5000/api/submit`, {
+      const response = await fetch(`${getUrl()}/api/submit`, {
         method: 'POST',
         body: formData, 
       });

@@ -37,11 +37,15 @@ export default function OpenData() {
     textColor: "white" 
   }
 
+  function getUrl() {
+    return import.meta.env.VITE_FLOTECTOR_API || "http://localhost:5000";
+  }
+
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/data?page=${currentPage}&limit=${LIMIT}`
+          `${getUrl()}/api/data?page=${currentPage}&limit=${LIMIT}`
         );
         
         if (!response.ok) {

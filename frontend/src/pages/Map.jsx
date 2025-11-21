@@ -15,6 +15,10 @@ export default function MapPage() {
   const navigate = useNavigate();
   const location = useLocation(); 
 
+  function getUrl() {
+    return import.meta.env.VITE_FLOTECTOR_API || "http://localhost:5000";
+  }
+
   // 1. GET COORDINATES FROM NAVIGATION STATE
   // If location.state exists (user clicked "View on Map"), use those coords.
   // Otherwise, default to the Imus/Cavite area.
@@ -42,7 +46,7 @@ export default function MapPage() {
       
       setLoading(true);
       try {
-        let url = `http://localhost:5000/api/markers?filter=${filter}`;
+        let url = `${getUrl()}/api/markers?filter=${filter}`;
         const response = await fetch(url);
         const data = await response.json();
         setLocations(data);

@@ -32,6 +32,10 @@ export default function Dashboard() {
   
   const toast = useToast();
 
+  function getUrl() {
+    return import.meta.env.VITE_FLOTECTOR_API || "http://localhost:5000";
+  }
+
   // --- Helper: Calculate Date Range ---
   const getDateRange = useCallback((filter) => {
     const end = new Date();
@@ -68,7 +72,7 @@ export default function Dashboard() {
       console.log(`Submission Fetching range: ${start} to ${end}`); 
       
       // NOTE: Ensure this URL matches your Flask backend
-      const response = await fetch(`http://localhost:5000/api/dashboard/submissions?start_date=${start}&end_date=${end}`);
+      const response = await fetch(`${getUrl()}/api/dashboard/submissions?start_date=${start}&end_date=${end}`);
       
       if (!response.ok) {
         throw new Error(`API Error: ${response.statusText}`);
@@ -104,7 +108,7 @@ export default function Dashboard() {
       console.log(`Waste Analytics Fetching range: ${start} to ${end}`); 
       
       // NOTE: Ensure this URL matches your Flask backend
-      const response = await fetch(`http://localhost:5000/api/dashboard/waste-analytics?start_date=${start}&end_date=${end}`);
+      const response = await fetch(`${getUrl()}/api/dashboard/waste-analytics?start_date=${start}&end_date=${end}`);
       
       if (!response.ok) {
         throw new Error(`API Error: ${response.statusText}`);
