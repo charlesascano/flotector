@@ -100,7 +100,7 @@ function TopBarangayList({ city }) {
                 textAlign="right"
                 pr="0"
               >
-                Reports
+                Detections
               </Th>
             </Tr>
           </Thead>
