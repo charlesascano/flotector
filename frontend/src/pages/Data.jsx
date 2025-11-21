@@ -7,6 +7,7 @@ import {
 } from '@chakra-ui/react';
 import { ArrowBackIcon, ArrowForwardIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
+import Layout from '../components/Layout';
 
 export default function OpenData() {
   const [flotectorData, setFlotectorData] = useState([]);
@@ -78,7 +79,8 @@ export default function OpenData() {
   };
 
   return (
-  <Box>
+  <Layout>
+      <Box>
     <Flex textAlign="center" direction="column">
       <Box pt={8} pb={3}>
         <Heading fontSize={{ base: "40px", sm: "50px", md: "60px" }} color="#15A33D">
@@ -243,5 +245,6 @@ export default function OpenData() {
       </Box>
     </Flex>
   </Box>
+  </Layout>
   );
 }
