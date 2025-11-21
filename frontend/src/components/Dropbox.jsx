@@ -1,8 +1,8 @@
-import { Box, Image, Text, VStack, Stack } from "@chakra-ui/react";
+import { Box, Image, Text, VStack, Stack, Center } from "@chakra-ui/react";
 import img from "../assets/add-image.svg";
 import { useEffect, useState } from "react";
 
-const Dropbox = ({ inputRef, file, onFileChange, onClear }) => {
+const Dropbox = ({ inputRef, file, onFileChange}) => {
   const [preview, setPreview] = useState(null);
 
   // Generate preview URL
@@ -25,10 +25,8 @@ const Dropbox = ({ inputRef, file, onFileChange, onClear }) => {
     return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${units[i]}`;
   };
 
-  const handleRemove = (e) => {
-    e.stopPropagation();
-    onClear?.();
-  };
+// Helper to check if the file is actually an image
+  const isImage = file && file.type.startsWith("image/");
 
   return (
     <Box
@@ -52,10 +50,10 @@ const Dropbox = ({ inputRef, file, onFileChange, onClear }) => {
       {/* Hidden file input */}
       <input
         ref={inputRef}
+        id="fileInput"
         type="file"
         hidden
         onChange={onFileChange}
-        accept="image/png, image/jpeg, image/heic"
       />
 
       {/* FILE PREVIEW */}
@@ -75,8 +73,23 @@ const Dropbox = ({ inputRef, file, onFileChange, onClear }) => {
             bg="white"
             flexShrink={0}
             boxShadow="sm"
+            border="1px solid"
+            borderColor="gray.200"
           >
-            <Image src={preview} objectFit="cover" w="full" h="full" />
+            {isImage ? (
+              /* Show Image if it is an image */
+              <Image src={preview} objectFit="cover" w="full" h="full" />
+            ) : (
+              /* Generic Placeholder if other file type */
+              <Center w="full" h="full" bg="gray.100" flexDirection="column">
+                <Text fontSize="xs" fontWeight="bold" color="gray.500">
+                  FILE
+                </Text>
+                <Text fontSize="xs" color="gray.400">
+                  {file.name.split('.').pop().toUpperCase()}
+                </Text>
+              </Center>
+            )}
           </Box>
 
           {/* File Details */}
