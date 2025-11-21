@@ -3,17 +3,22 @@ import {
   Heading,
   Text,
   Grid,
-  GridItem
+  GridItem,
+  Flex
 } from "@chakra-ui/react";
 import SubmissionsGraph from "./SubmissionsGraph";
+import DateFilter from "../DateFilter";
 
-const SubmissionsAnalytics = ({ totalSubmissions, graphData }) => (
+const SubmissionsAnalytics = ({ totalSubmissions, graphData, data=null, currentFilter, filterChange }) => (
   <Box w="100%" p={{ base: 4, md: 8 }} bg="#F6F6F6" borderRadius="20px" borderBottom="1px solid #C2C2C2">
 
     {/* Section Heading */}
-    <Heading color="#053774" fontWeight="700" mb={6} fontSize={{ base: "2xl", sm: "3xl", md: "40px" }}>
-      Submissions Analytics
-    </Heading>
+    <Flex justify="space-between" align={{ base: 'flex-start', lg: 'center' }} mb={{ base: 6, md: 8 }} direction={{ base: 'column', lg: 'row' }} gap={4}>
+      <Heading color="#053774" fontWeight="700" fontSize={{ base: "2xl", sm: "3xl", md: "40px" }}>
+        Submissions Analytics
+      </Heading>
+      <DateFilter currentFilter={currentFilter} onFilterChange={filterChange} />
+    </Flex>
 
     <Grid
       gap={3}
@@ -42,7 +47,7 @@ const SubmissionsAnalytics = ({ totalSubmissions, graphData }) => (
 
         <Text fontWeight="700" fontSize={{ base: "calc(42px + 0.8vw)" }} lineHeight="1" textAlign={"right"} w="100%">
           {/* Ensure we show 0 if null/undefined */}
-          {totalSubmissions !== undefined ? totalSubmissions : 0}
+          {data?.total_submissions !== undefined ? data.total_submissions : 0}
         </Text>
       </GridItem>
 
@@ -59,7 +64,7 @@ const SubmissionsAnalytics = ({ totalSubmissions, graphData }) => (
         height={{ md: "400px" }}
       >
         {/* Pass the real data down */}
-        <SubmissionsGraph data={graphData} />
+        <SubmissionsGraph data={data?.daily_counts} />
       </GridItem>
     </Grid>
   </Box>
