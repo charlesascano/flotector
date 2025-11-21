@@ -53,7 +53,7 @@ function TopBarangayList({ selected_city, brgy_list=[] }) {
       >
         <Box mb="10px">
           <Text sx={brgyHeader} color="#5D5D5D" letterSpacing="1px" mr="0.5em">
-            {selected_city.city}
+            {selected_city.city ? selected_city.city : "Please Select a City"}
           </Text>
         </Box>
         <Text fontSize="sm" color="gray.500" fontStyle="italic">
@@ -126,8 +126,7 @@ function TopBarangayList({ selected_city, brgy_list=[] }) {
 /* ---------------- Main Component ---------------- */
 export default function LocationHotspots({ brgy_per_city=[], city_totals=[] }) {
 
-  
-  const [selectedCity, setSelectedCity] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(city_totals ? city_totals[0]?.city : null);
   // 1. DEFINE YOUR TARGET CITIES
   const TARGET_CITIES = [
     "Amadeo",
@@ -147,16 +146,16 @@ export default function LocationHotspots({ brgy_per_city=[], city_totals=[] }) {
     // If it exists, use it. If not, create a 0 count object.
     return existingData || { city: cityName, total_count: 0 };
   }).sort((a, b) => b.total_count - a.total_count);
-
+  
   // 4. Auto-select the first city when data loads
-  useEffect(() => {
-    if (chartData.length > 0 && !selectedCity) {
-      setSelectedCity(chartData[0]);
-    } else if (chartData.length > 0 && selectedCity) {
-        const stillExists = chartData.find(c => c.city === selectedCity.city);
-        if (!stillExists) setSelectedCity(chartData[0]);
-    }
-  }, [selectedCity, chartData]); // Dependency updated
+  // useEffect(() => {
+  //   if (chartData.length > 0 && !selectedCity) {
+  //     setSelectedCity(chartData[0]);
+  //   } else if (chartData.length > 0 && selectedCity) {
+  //       const stillExists = chartData.find(c => c.city === selectedCity.city);
+  //       if (!stillExists) setSelectedCity(chartData[0]);
+  //   }
+  // }, [selectedCity, chartData]); // Dependency updated
 
   // Dynamic chart height based on number of cities
   const chartHeight = Math.max(chartData.length * 50, 300);
@@ -178,7 +177,32 @@ export default function LocationHotspots({ brgy_per_city=[], city_totals=[] }) {
   return (
     <div className="chart-card-container">
       {/* ... Headings ... */}
-
+      <Heading
+        as='h2'
+        color='#053774'
+        fontSize={'32px'}
+        fontWeight={'600'}
+        letterSpacing={'1px'}
+        mb={4}
+      >
+        LOCATION HOTSPOTS
+      </Heading>
+      {/* Subheading */}
+      <h3 className="chart-title" style={{ marginBottom: '0.25rem', fontSize: '16px' }}>
+        By City / Municipality
+      </h3>
+      
+      {/* Description */}
+      <Text
+        as="p"
+        fontsize="sm"
+        fontStyle="italic"
+        color="#053774"
+        mb="2"
+        className="chart-subtitle">
+        Click a city to view its top barangays.
+      </Text>
+      
       <Flex direction={{ base: 'column', md: 'row' }} gap={8} align="flex-start" mt={4}>
         <Box w={{ base: '100%', md: '60%' }} borderRadius="8px" outline="1px solid #C2C2C2" py={4} bg="white">
           

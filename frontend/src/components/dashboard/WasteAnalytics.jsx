@@ -170,10 +170,10 @@ const WasteAnalytics = ({
                   </Text>
 
                   <Text fontSize={{ base: 'xs', md: 'sm' }} color="#053774">
-                    {topHotspot?.barangay && topHotspot?.detections > 0 ? (
+                    {data?.highest_barangay_total?.total_count > 0 ? (
                       <>
                         is the most reported area with{' '}
-                        <Text as="span" fontWeight="700">{topHotspot.detections}</Text> detections
+                        <Text as="span" fontWeight="700">{data?.highest_barangay_total?.total_count}</Text> detections
                       </>
                     ) : (
                       "No reported detections yet"
