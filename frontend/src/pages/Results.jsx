@@ -63,13 +63,17 @@ export default function Results({ isOverlay = false }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [resultsData, setResultsData] = useState(null);
   const [showDetections, setShowDetections] = useState(true);
+
+  function getUrl() {
+    return import.meta.env.VITE_FLOTECTOR_API || "http://localhost:5000";
+  }
   
   useEffect(() => {
     const fetchResults = async () => {
       try {
         if (!uuid) throw new Error("No submission ID provided.");
 
-        const response = await fetch(`http://localhost:5000/api/results/${uuid}`);
+        const response = await fetch(`${getUrl()}/api/results/${uuid}`);
 
         if (!response.ok) {
           const err = await response.json();
