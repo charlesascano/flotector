@@ -1,10 +1,9 @@
 // components/LoadingOverlay.jsx
-import { Box, Spinner, Heading, Text, Skeleton } from "@chakra-ui/react";
+import { Box, Spinner, Heading, Text } from "@chakra-ui/react";
 
 const Loading = ({ 
-    heading = "Making Waves...", 
-    message = "Hang tight! We're navigating through the waves to your next destination!", 
-    showSkeleton = true 
+    heading = "Detecting...", 
+    message = "Hang tight! Making sure we spot every floating waste clearly.", 
   }) => (
     <Box
       position="fixed"
@@ -26,17 +25,6 @@ const Loading = ({
       <Text fontSize={{ base: "12px", sm: "12px", md: "16px" }} color="#053774" fontWeight="medium" fontStyle="italic" align="center" mx="12">
         {message}
       </Text>
-      {showSkeleton && (
-        <Skeleton
-          mt={4}
-          width="100%"
-          maxW="300px"
-          height="20px"
-          borderRadius="md"
-          startColor="#053774"
-          endColor="#128B34"
-        />
-      )}
     </Box>
   );
 
