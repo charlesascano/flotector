@@ -195,7 +195,7 @@ export default function Dashboard() {
         />
 
         {/* --- 3. Recent Submissions --- */}
-        <RecentSubmissions />
+        <RecentSubmissions key={lastUpdated.getTime()} refreshTrigger={lastUpdated}/>
 
       </VStack>
     </Layout>
