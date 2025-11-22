@@ -16,6 +16,9 @@ import SubmissionsAnalytics from '../components/dashboard/SubmissionsAnalytics';
 import WasteAnalytics from '../components/dashboard/WasteAnalytics';
 import RecentSubmissions from '../components/dashboard/RecentSubmissions';
 
+import DbDisclaimer from '../components/dbDisclaimer';
+
+
 export default function Dashboard() {
   // --- UI Responsive Styles ---
   const headingFontSize = useBreakpointValue({ base: "32px", md: "64px" });
@@ -146,7 +149,6 @@ export default function Dashboard() {
             <Text color="#15A33D" fontSize={headingFontSize} fontWeight="800" wordBreak="break-word">
               DASHBOARD
             </Text>
-
             <HStack spacing={2}>
               <Text color="#8E8E8E" fontSize={subTextFontSize} fontWeight="400" wordBreak="break-word">
                 Last updated: {lastUpdated.toLocaleString([], {
@@ -175,6 +177,8 @@ export default function Dashboard() {
           </Button>
         </HStack>
 
+        <DbDisclaimer />
+
         {/* --- 1. Submissions Analytics Section --- */}
         <SubmissionsAnalytics 
           data={submissionData}
@@ -190,7 +194,7 @@ export default function Dashboard() {
                 onFilterChange={setFilterType}
         />
 
-        {/* --- 3. Recent Submissions (Static for now) --- */}
+        {/* --- 3. Recent Submissions --- */}
         <RecentSubmissions />
 
       </VStack>

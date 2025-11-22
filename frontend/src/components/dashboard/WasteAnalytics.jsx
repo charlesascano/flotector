@@ -62,7 +62,7 @@ const WasteAnalytics = ({
   const ActiveIcon = getDynamicIcon(safeWasteType);
 
   return (
-    <Box w="100%" p={{ base: 4, md: 8 }} bg="#F6F6F6" borderRadius="20px" borderBottom="1px solid #C2C2C2" minH="100vh">
+    <Box w="100%" p={{ base: 4, md: 8 }} bg="#F6F6F6" borderRadius="20px" borderBottom="1px solid #C2C2C2" >
       {/* Header */}
       <Flex justify="space-between" align={{ base: 'flex-start', lg: 'center' }} mb={{ base: 6, md: 8 }} direction={{ base: 'column', lg: 'row' }} gap={4}>
         <Heading color="#053774" fontWeight="700" fontSize={{ base: '24px', md: '32px', lg: '40px' }} lineHeight="1.1">

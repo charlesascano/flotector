@@ -60,7 +60,7 @@ const Footer = () => {
       <Flex justify="center" mt={6}>
         <Stack spacing={1} textAlign="center">
           <Box fontSize="sm" opacity={0.9}>
-            Have any questions? Email us:
+            For any inquiries, please contact:
           </Box>
 
           <HStack justify="center" spacing={2}>
