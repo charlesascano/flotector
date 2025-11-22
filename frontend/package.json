@@ -29,6 +29,7 @@
     "react-map-gl": "^8.1.0",
     "react-router-dom": "^7.5.3",
     "recharts": "^3.4.1",
+    "use-supercluster": "^1.2.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
