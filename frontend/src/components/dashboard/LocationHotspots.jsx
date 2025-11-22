@@ -53,14 +53,11 @@ function TopBarangayList({ selected_city, brgy_list=[] }) {
       >
         <Box mb="10px">
           <Text sx={brgyHeader} color="#5D5D5D" letterSpacing="1px" mr="0.5em">
-            {selected_city.city ? selected_city.city : "Please Select a City"}
+            {selected_city?.city ? selected_city.city : "Please Select a City"}
           </Text>
         </Box>
         <Text fontSize="sm" color="gray.500" fontStyle="italic">
           Detailed barangay breakdown is not currently available for this city.
-        </Text>
-        <Text fontSize="xs" color="gray.400" mt={2}>
-          (Total Detections: {selected_city.total_count})
         </Text>
       </Box>
     );
@@ -255,7 +252,7 @@ export default function LocationHotspots({ brgy_per_city=[], city_totals=[] }) {
         </Box>
 
         <Box w={{ base: '100%', md: '40%' }}>
-          {selectedCity && <TopBarangayList selected_city={selectedCity} brgy_list={selectedCityBarangays} />}
+          <TopBarangayList selected_city={selectedCity} brgy_list={selectedCityBarangays} />
         </Box>
       </Flex>
     </div>
