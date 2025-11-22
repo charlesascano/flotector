@@ -276,7 +276,7 @@ export default function Results({ isOverlay = false }) {
               <Flex onClick={handleOpenMap} gap={4} alignItems={'center'} cursor='pointer' _hover={{color: "blue.600", transition: "150ms"}}>
                 <Icon as={FaLocationDot} boxSize={6}></Icon>
                 <Flex flexDirection={'column'}>
-                  <Flex alignItems={'center'} gap={1}>
+                  <Flex alignItems={'center'} gap={1} >
                     <Text fontWeight={'bold'}>Location</Text>
                     <ExternalLinkIcon/>
                   </Flex>
