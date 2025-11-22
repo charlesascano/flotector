@@ -18,7 +18,7 @@ const PrivacyPolicy = ({isOpen, onClose}) => {
     return (
       <Modal isOpen={isOpen} onClose={onClose} size={'xl'} >
         <ModalOverlay  />
-        <ModalContent >
+        <ModalContent maxW={{ base: "90%", sm: "500px" }} >
 
             <ModalHeader>Privacy Policy</ModalHeader>
             <ModalCloseButton />
