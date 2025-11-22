@@ -66,10 +66,10 @@ const WasteAnalytics = ({
             {/* Overall Detection Card */}
             <GridItem colSpan={1} display="flex" flexDirection="column" justifyContent="space-between" p={{ base: 4, sm: 5 }} bgGradient="linear(330deg, white -220%, #053774 100%)" boxShadow="0px 4px 4px rgba(0,0,0,0.25)" borderRadius="35px" color="white" minH="150px">
               <Text fontWeight="700" fontSize={{ base: 'calc(8px + 0.6vw)' }} lineHeight="1.2" mb={2}>
-                OVERALL <br /> DETECTION
+                ALL-TIME <br /> DETECTIONS
               </Text>
               <Text fontWeight="700" fontSize={{ base: '2rem', md: '2.5rem' }} lineHeight="1" textAlign="right">
-                {data?.total_detections_all_time}
+                {data ? data?.total_detections_all_time: 0}
               </Text>
             </GridItem>
 
