@@ -9,39 +9,27 @@ map_bp = Blueprint('map_bp',
 def get_markers():
     try:
         supabase = current_app.supabase
-        filter_option = request.args.get('filter', 'all') # Default to 'all'
+        
+        # 1. CHANGED: Accept specific dates instead of a 'filter' string
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
         
         query = supabase.table('flotector-data').select("id, lat, lng, created_at, total_count")
 
-        # --- Date Filtering Logic ---
-        now = datetime.now()
-
-        if filter_option == 'today':
-            start_of_day = now.replace(hour=0, minute=0, second=0, microsecond=0)
-            query = query.gte('created_at', start_of_day.isoformat())
+        # 2. CHANGED: Simplified logic. Just apply range if params exist.
+        if start_date:
+            query = query.gte('created_at', start_date)
         
-        elif filter_option == 'this week':
-            seven_days_ago = now - timedelta(days=7)
-            query = query.gte('created_at', seven_days_ago.isoformat())
-
-        elif filter_option == 'this month':
-            thirty_days_ago = now - timedelta(days=30)
-            query = query.gte('created_at', thirty_days_ago.isoformat())
-        
-        elif filter_option == 'custom':
-            start_date = request.args.get('start')
-            end_date = request.args.get('end')
-            if start_date and end_date:
-                query = query.gte('created_at', start_date).lte('created_at', end_date)
-
-        # For 'all', don't add any date filters.
+        if end_date:
+            # IMPORTANT: Append time to end_date to ensure we get the whole day
+            # '2025-11-22' becomes '2025-11-22 23:59:59'
+            query = query.lte('created_at', f"{end_date} 23:59:59")
 
         response = query.execute()
         
         if response.data:
             return jsonify(response.data), 200
         else:
-            # Return an empty array, not an error, if no data matches the filter
             return jsonify([]), 200
 
     except Exception as e:

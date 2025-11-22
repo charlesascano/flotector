@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'; // Added useMemo
+import { useState, useEffect, useMemo, useCallback } from 'react'; // Added useMemo
 import { Box, Spinner, HStack, Button, Select } from "@chakra-ui/react";
 import Map, { Marker, NavigationControl } from 'react-map-gl/mapbox';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -24,6 +24,8 @@ export default function MapPage() {
   // Otherwise, default to the Imus/Cavite area.
   const incomingLocation = location.state;
 
+  
+
   const initialView = useMemo(() => {
     if (incomingLocation && incomingLocation.latitude && incomingLocation.longitude) {
       return {
@@ -41,12 +43,61 @@ export default function MapPage() {
 
   const filterOptions = ['All', 'Today', 'This Week', 'This Month', 'Custom'];
 
+  // 2. ADDED: Helper to Calculate Date Range (Same logic as Dashboard)
+  const getDateRange = useCallback((filterInput) => {
+    // Helper to format date as YYYY-MM-DD for Local Time
+    const formatDate = (d) => {
+      if (!(d instanceof Date)) return '';
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    // Check if 'filterInput' is a Custom Range Array [start, end]
+    if (Array.isArray(filterInput) && filterInput.length > 0) {
+      return {
+        start: formatDate(filterInput[0]),
+        end: formatDate(filterInput[1] || filterInput[0])
+      };
+    }
+
+    const end = new Date();
+    const start = new Date();
+    
+    // Normalize string to match your UI values (which use toLowerCase)
+    const mode = typeof filterInput === 'string' ? filterInput.toLowerCase() : '';
+
+    if (mode === 'today') {
+      start.setHours(0, 0, 0, 0);
+    } else if (mode === 'this week') {
+      start.setDate(end.getDate() - 7);
+    } else if (mode === 'this month') {
+      start.setDate(1); 
+    } else if (mode === 'all') {
+      // Set a far past date to fetch "All" history
+      start.setFullYear(1997, 0, 1); 
+    }
+    
+    return {
+      start: formatDate(start),
+      end: formatDate(end)
+    };
+  }, []);
+
   useEffect(() => {
     const fetchFromPython = async () => {
       
       setLoading(true);
       try {
-        let url = `${getUrl()}/api/markers?filter=${filter}`;
+        // 3. CHANGED: Get dates and use start_date/end_date params
+        const { start, end } = getDateRange(filter);
+        
+        console.log(`Map Fetching range: ${start} to ${end}`);
+
+        // Matches Dashboard API structure
+        let url = `${getUrl()}/api/markers?start_date=${start}&end_date=${end}`;
+        
         const response = await fetch(url);
         const data = await response.json();
         setLocations(data);
@@ -56,9 +107,9 @@ export default function MapPage() {
         setLoading(false);
       }
     };
-    window.scrollTo(0, 0); // Scroll to top at first load
+    window.scrollTo(0, 0); 
     fetchFromPython();
-  }, [filter]);
+  }, [filter, getDateRange]);
 
   const FilterMenu = () => (
     <Box
