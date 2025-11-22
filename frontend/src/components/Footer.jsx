@@ -1,6 +1,7 @@
-import { Box, Flex, Stack, Image, Link, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Flex, Stack, HStack, Image, Link, useBreakpointValue } from '@chakra-ui/react';
 import { Link as RouterLink } from "react-router-dom";
 import FlotectorLogo from '../assets/header-logo-svg/flotector_logo_horizontal_white.svg';
+import { EmailIcon } from '@chakra-ui/icons';
 
 const Footer = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -54,6 +55,28 @@ const Footer = () => {
           ))}
         </Stack>
       </Flex>
+
+      {/* Contact */}
+      <Flex justify="center" mt={6}>
+        <Stack spacing={1} textAlign="center">
+          <Box fontSize="sm" opacity={0.9}>
+            Have any questions? Email us:
+          </Box>
+
+          <HStack justify="center" spacing={2}>
+            <EmailIcon boxSize={4} />
+            <Link
+              href="mailto:flotector.team@gmail.com"
+              fontSize="sm"
+              fontWeight="semibold"
+              _hover={{ textDecoration: 'underline' }}
+            >
+              flotector.team@gmail.com 
+            </Link>
+          </HStack>
+        </Stack>
+      </Flex>
+      
     </Box>
   );
 };
