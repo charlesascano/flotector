@@ -262,21 +262,24 @@ export default function Results({ isOverlay = false }) {
               <Flex gap={4} alignItems={"center"}>
                 <Icon as={FaCalendar} boxSize={6}></Icon>
                 <Flex flexDirection={'column'}>
-                  <Text fontWeight={'bold'}>Date Captured:</Text>
+                  <Text fontWeight={'bold'}>Date Captured</Text>
                   <Text>{formatDate(resultsData && resultsData.created_at)}</Text>
                 </Flex>
               </Flex>
               <Flex gap={4} alignItems={"center"}>
                 <Icon as={FaCalendarCheck} boxSize={6}></Icon>
                 <Flex flexDirection={'column'}>
-                  <Text fontWeight={'bold'}>Upload Date:</Text>
+                  <Text fontWeight={'bold'}>Upload Date</Text>
                   <Text>{formatDate(resultsData && resultsData.uploaded_at)}</Text>
                 </Flex>
               </Flex>
               <Flex onClick={handleOpenMap} gap={4} alignItems={'center'} cursor='pointer' _hover={{color: "blue.600", transition: "150ms"}}>
                 <Icon as={FaLocationDot} boxSize={6}></Icon>
                 <Flex flexDirection={'column'}>
-                  <Text fontWeight={'bold'}>Location <ExternalLinkIcon/>:</Text>
+                  <Flex alignItems={'center'} gap={1} >
+                    <Text fontWeight={'bold'}>Location</Text>
+                    <ExternalLinkIcon/>
+                  </Flex>
                   <Text >{resultsData && resultsData.barangay}, {resultsData && resultsData.city}</Text>
                 </Flex>
               </Flex>
