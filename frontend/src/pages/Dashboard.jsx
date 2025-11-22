@@ -40,19 +40,27 @@ export default function Dashboard() {
   }
 
   // --- Helper: Calculate Date Range ---
+  // --- Helper: Calculate Date Range ---
   const getDateRange = useCallback((filter) => {
-    // 1. Helper to safely format dates
-    const formatDate = (d) => (d instanceof Date ? d.toISOString().split('T')[0] : '');
+    // 1. FIXED: Helper to safely format dates using LOCAL time (avoids timezone shift)
+    const formatDate = (d) => {
+      if (!(d instanceof Date)) return '';
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
 
     // 2. Check if 'filter' is actually the Custom Range Array [start, end]
     if (Array.isArray(filter) && filter.length > 0) {
       return {
         start: formatDate(filter[0]),
-        end: formatDate(filter[1] || filter[0]) // Use start date if end is missing
+        // Handle case where user picks same start/end date or just one date
+        end: formatDate(filter[1] || filter[0]) 
       };
     }
 
-    // 3. Existing String Logic
+    // ... existing "Existing String Logic" (Today/Last 7 days) remains the same ...
     const end = new Date();
     const start = new Date();
 
