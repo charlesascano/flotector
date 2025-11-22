@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Flex,
   Button,
@@ -8,8 +8,12 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  Box
+  Box,
+  Modal, ModalOverlay, ModalContent, ModalHeader, 
+  ModalCloseButton, ModalBody, ModalFooter,
+  useDisclosure
 } from '@chakra-ui/react';
+import { RangeDatepicker } from "chakra-dayzed-datepicker";
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { IoOptionsOutline } from 'react-icons/io5';
 
@@ -20,7 +24,9 @@ const DateFilter = ({
 }) => {
   
   const filterOptions = ['Today', 'Last 7 days', 'This Month'];
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedDates, setSelectedDates] = useState([new Date(), new Date()]);
+  
   const baseBtnStyle = {
     fontWeight: '700',
     fontSize: { base: 'xs', md: 'sm' },
@@ -49,7 +55,7 @@ const DateFilter = ({
                   _hover={currentFilter !== option ? { bg: 'gray.50' } : undefined}
                   borderLeftRadius={idx === 0 ? '8px' : 0}
                   borderRightRadius={idx === filterOptions.length - 1 ? '8px' : 0}
-                  onClick={() => onFilterChange(option)} // Call Parent Function
+                  onClick={() => onFilterChange(option) } // Call Parent Function
                 >
                   {option}
                 </Button>
@@ -67,6 +73,7 @@ const DateFilter = ({
               boxShadow="sm"
               minWidth={{ base: 'auto', md: '136px' }}
               leftIcon={<Icon as={IoOptionsOutline} boxSize="16px" />}
+              onClick={onOpen}
             >
               Custom Range
             </Button>
@@ -84,13 +91,97 @@ const DateFilter = ({
                     {option}
                   </MenuItem>
                 ))}
-                <MenuItem fontWeight="600" color="#5D5D5D" icon={<Icon as={IoOptionsOutline} boxSize="16px" />}>
+                <MenuItem fontWeight="600" color="#5D5D5D" onClick={onOpen} icon={<Icon as={IoOptionsOutline} boxSize="16px" />}>
                   Custom Range
                 </MenuItem>
               </MenuList>
             </Menu>
           </Flex>
         </Box>
+
+        <Modal isOpen={isOpen} onClose={onClose} >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Date Range </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody >
+            <RangeDatepicker
+              selectedDates={selectedDates}
+              onDateChange={setSelectedDates}
+              maxDate={new Date()}
+              
+              propsConfigs={{
+                dateNavBtnProps: {
+                  padding: 0,
+                  fontWeight:'normal'
+                },
+
+                dayOfMonthBtnProps: {
+                  defaultBtnProps: {
+                    fontWeight: 'normal',
+                    _hover: {
+                      bgColor: '#648cbeff',
+                      color: 'white'
+                    }
+                  },
+                  selectedBtnProps: {
+                    bgColor: '#053774',
+                    color: 'white',
+                    _hover: {
+                      bgColor: '#053774'
+                    }
+                  },
+                  isInRangeBtnProps: {
+                    bgColor: '#d9eaffff',
+                  }
+                },
+                popoverCompProps: {
+                  popoverContentProps: {
+                    padding: {base: 0, md: 2},
+                    width: {base: '100vw', sm: '100%'}
+                  },
+                },
+                  calendarPanelProps: {
+                    wrapperProps: {
+                      width: '100%'
+                    },
+                    contentProps: {
+                      boxShadow: 'md',
+                    },
+                    dividerProps: {
+                      display: "none",
+                    },
+                  },
+
+                  dateHeadingProps: {
+                    letterSpacing: '1px',
+                  },
+
+                  weekdayLabelProps: {
+                    fontWeight: 'normal'
+                  },
+
+                  inputProps: {
+                    letterSpacing: '1px'
+                  },
+              }}
+            />
+          </ModalBody>
+
+          <ModalFooter>
+            <Button variant='ghost' colorScheme='blue' mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button colorScheme='blue' 
+              onClick={() => {
+                onClose();
+                onFilterChange(selectedDates);
+              }}>
+              Select
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
         </>
   );
 };

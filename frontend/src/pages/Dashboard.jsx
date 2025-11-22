@@ -6,7 +6,7 @@ import {
   Button, 
   useBreakpointValue, 
   useToast,
-  Spinner
+  Spinner,
 } from "@chakra-ui/react";
 import { FiRefreshCw } from "react-icons/fi";
 
@@ -41,19 +41,28 @@ export default function Dashboard() {
 
   // --- Helper: Calculate Date Range ---
   const getDateRange = useCallback((filter) => {
+    // 1. Helper to safely format dates
+    const formatDate = (d) => (d instanceof Date ? d.toISOString().split('T')[0] : '');
+
+    // 2. Check if 'filter' is actually the Custom Range Array [start, end]
+    if (Array.isArray(filter) && filter.length > 0) {
+      return {
+        start: formatDate(filter[0]),
+        end: formatDate(filter[1] || filter[0]) // Use start date if end is missing
+      };
+    }
+
+    // 3. Existing String Logic
     const end = new Date();
     const start = new Date();
-    
+
     if (filter === 'Today') {
       start.setHours(0, 0, 0, 0);
     } else if (filter === 'Last 7 days') {
       start.setDate(end.getDate() - 7);
     } else if (filter === 'This Month') {
-      start.setDate(1); // 1st of current month
+      start.setDate(1); 
     }
-    
-    // Format to YYYY-MM-DD for the API
-    const formatDate = (d) => d.toISOString().split('T')[0];
     
     return {
       start: formatDate(start),
@@ -83,7 +92,6 @@ export default function Dashboard() {
       
       const result = await response.json();
       setSubmissionData(result.data[0]);
-      console.log("submission shid:", result.data[0]);
     } catch (error) {
       console.error("Dashboard fetch error:", error);
       toast({
