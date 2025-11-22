@@ -11,7 +11,7 @@ def get_markers():
         supabase = current_app.supabase
         filter_option = request.args.get('filter', 'all') # Default to 'all'
         
-        query = supabase.table('flotector-data').select("id, lat, lng, created_at")
+        query = supabase.table('flotector-data').select("id, lat, lng, created_at, total_count")
 
         # --- Date Filtering Logic ---
         now = datetime.now()
