@@ -150,24 +150,34 @@ export default function MapPage() {
         boxShadow="lg"
         minW={{ base: "140px", md: "auto" }}
         >
+        {/* --- MOBILE VIEW --- */}
         <Box display={{ base: 'block', md: 'none' }}>
-            <Select 
-                value={Array.isArray(filter) ? 'custom' : filter} 
-                onChange={(e) => handleFilterClick(e.target.value)}
-                size="sm"
-            >
-                {filterOptions.map((period) => (
-                    <option key={period} value={period.toLowerCase()}>
-                        {period}
-                    </option>
-                ))}
-            </Select>
+            <HStack spacing={2}>
+                <Select 
+                    value={isCustomActive ? 'custom' : filter} 
+                    onChange={(e) => handleFilterClick(e.target.value)}
+                    size="sm"
+                >
+                    {filterOptions.map((period) => (
+                        <option key={period} value={period.toLowerCase()}>
+                            {period}
+                        </option>
+                    ))}
+                </Select>
+                
+                {/* ADDED: Edit button triggers modal if Custom is already selected */}
+                {isCustomActive && (
+                    <Button size="sm" onClick={onOpen} colorScheme="blue" variant="solid" px={4}>
+                        Edit
+                    </Button>
+                )}
+            </HStack>
         </Box>
 
+        {/* --- DESKTOP VIEW --- */}
         <HStack spacing="2" display={{ base: 'none', md: 'flex' }}>
             {filterOptions.map((period) => {
                 const val = period.toLowerCase();
-                // Logic: Active if strings match OR if it's 'Custom' and filter is an array
                 const isActive = (filter === val) || (val === 'custom' && isCustomActive);
 
                 return (
