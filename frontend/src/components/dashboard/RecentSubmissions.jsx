@@ -164,6 +164,7 @@ export const RecentSubmissions = () => {
                         to={`/results/${entry.id}`}
                         state={{ background: location }}
                         color="teal.500"
+                        fontWeight="bold"
                       >
                         View Results
                       </Text>

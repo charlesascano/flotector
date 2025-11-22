@@ -1,5 +1,5 @@
 import { Box, Icon, Flex, Text, Image, Heading, HStack, Button, SimpleGrid, Spinner, useToast, IconButton, Drawer, DrawerOverlay, DrawerContent, DrawerBody, color } from "@chakra-ui/react";
-import { ArrowBackIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import { Link as RouterLink, useParams, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import WasteCard from "../components/WasteCard";
@@ -276,7 +276,7 @@ export default function Results({ isOverlay = false }) {
               <Flex onClick={handleOpenMap} gap={4} alignItems={'center'} cursor='pointer' _hover={{color: "blue.600", transition: "150ms"}}>
                 <Icon as={FaLocationDot} boxSize={6}></Icon>
                 <Flex flexDirection={'column'}>
-                  <Text fontWeight={'bold'}>Location:</Text>
+                  <Text fontWeight={'bold'}>Location <ExternalLinkIcon/>:</Text>
                   <Text >{resultsData && resultsData.barangay}, {resultsData && resultsData.city}</Text>
                 </Flex>
               </Flex>
