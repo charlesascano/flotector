@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 
-export const RecentSubmissions = () => {
+export const RecentSubmissions = ({refreshTrigger}) => {
   const [recentData, setRecentData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const toast = useToast();
@@ -49,7 +49,7 @@ export const RecentSubmissions = () => {
     };
 
     fetchRecentData();
-  }, [toast]);
+  }, [toast, refreshTrigger]);
 
   const formatClassCount = (classCount) =>
     !classCount || Object.keys(classCount).length === 0
