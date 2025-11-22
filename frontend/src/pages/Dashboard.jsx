@@ -6,7 +6,7 @@ import {
   Button, 
   useBreakpointValue, 
   useToast,
-  Spinner
+  Spinner,
 } from "@chakra-ui/react";
 import { FiRefreshCw } from "react-icons/fi";
 
@@ -40,20 +40,37 @@ export default function Dashboard() {
   }
 
   // --- Helper: Calculate Date Range ---
+  // --- Helper: Calculate Date Range ---
   const getDateRange = useCallback((filter) => {
+    // 1. FIXED: Helper to safely format dates using LOCAL time (avoids timezone shift)
+    const formatDate = (d) => {
+      if (!(d instanceof Date)) return '';
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    // 2. Check if 'filter' is actually the Custom Range Array [start, end]
+    if (Array.isArray(filter) && filter.length > 0) {
+      return {
+        start: formatDate(filter[0]),
+        // Handle case where user picks same start/end date or just one date
+        end: formatDate(filter[1] || filter[0]) 
+      };
+    }
+
+    // ... existing "Existing String Logic" (Today/Last 7 days) remains the same ...
     const end = new Date();
     const start = new Date();
-    
+
     if (filter === 'Today') {
       start.setHours(0, 0, 0, 0);
     } else if (filter === 'Last 7 days') {
       start.setDate(end.getDate() - 7);
     } else if (filter === 'This Month') {
-      start.setDate(1); // 1st of current month
+      start.setDate(1); 
     }
-    
-    // Format to YYYY-MM-DD for the API
-    const formatDate = (d) => d.toISOString().split('T')[0];
     
     return {
       start: formatDate(start),
@@ -83,7 +100,7 @@ export default function Dashboard() {
       
       const result = await response.json();
       setSubmissionData(result.data[0]);
-      console.log("submission shid:", result.data[0]);
+      setLastUpdated(new Date());
     } catch (error) {
       console.error("Dashboard fetch error:", error);
       toast({
@@ -119,7 +136,7 @@ export default function Dashboard() {
       
       const result = await response.json();
       setWasteAnalyticsData(result);
-
+      setLastUpdated(new Date());
     } catch (error) {
       console.error("Dashboard fetch error:", error);
       toast({
