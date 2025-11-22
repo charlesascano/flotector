@@ -147,9 +147,11 @@ const DateFilter = ({
                   },
                   isInRangeBtnProps: {
                     bgColor: '#d9eaffff',
+                    color: 'black !important'
                   },
                   todayBtnProps: {
-                    background: "teal.400",
+                    background: "#15A33D",
+                    fontWeight: 'bold'
                   }
                 },
                 popoverCompProps: {

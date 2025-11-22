@@ -100,6 +100,7 @@ export default function Dashboard() {
       
       const result = await response.json();
       setSubmissionData(result.data[0]);
+      setLastUpdated(new Date());
     } catch (error) {
       console.error("Dashboard fetch error:", error);
       toast({
@@ -135,7 +136,7 @@ export default function Dashboard() {
       
       const result = await response.json();
       setWasteAnalyticsData(result);
-
+      setLastUpdated(new Date());
     } catch (error) {
       console.error("Dashboard fetch error:", error);
       toast({

@@ -9,7 +9,7 @@ import {
 import SubmissionsGraph from "./SubmissionsGraph";
 import DateFilter from "../DateFilter";
 
-const SubmissionsAnalytics = ({ totalSubmissions, graphData, data=null, currentFilter, onFilterChange }) => (
+const SubmissionsAnalytics = ({ data=null, currentFilter, onFilterChange }) => (
   <Box w="100%" p={{ base: 4, md: 8 }} bg="#F6F6F6" borderRadius="20px" borderBottom="1px solid #C2C2C2">
 
     {/* Section Heading */}
