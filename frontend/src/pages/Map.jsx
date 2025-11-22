@@ -207,9 +207,15 @@ export default function MapPage() {
           {...viewState}
           onMove={evt => {
             setViewState(evt.viewState);
-            // Update bounds so supercluster knows what to group
             setBounds(evt.target.getBounds().toArray().flat());
           }}
+          // --- ADD THIS SECTION ---
+          onLoad={(evt) => {
+             // This sets the bounds as soon as the map loads, 
+             // triggering supercluster immediately without user interaction
+             setBounds(evt.target.getBounds().toArray().flat());
+          }}
+          // ------------------------
           ref={mapRef}
           style={{ width: "100%", height: "100%" }}
           mapStyle="mapbox://styles/mapbox/streets-v12"
