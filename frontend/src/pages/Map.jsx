@@ -3,10 +3,10 @@ import {
   Box, Spinner, HStack, Button, Select, 
   Modal, ModalOverlay, ModalContent, ModalHeader, 
   ModalCloseButton, ModalBody, ModalFooter, 
-  useDisclosure, Text
+  useDisclosure
 } from "@chakra-ui/react";
 import { RangeDatepicker } from "chakra-dayzed-datepicker";
-import Map, { Marker, NavigationControl, useMap } from 'react-map-gl/mapbox';
+import Map, { Marker, NavigationControl } from 'react-map-gl/mapbox';
 import useSupercluster from 'use-supercluster'; // <--- 1. IMPORT THIS
 import { useNavigate, useLocation } from 'react-router-dom';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -152,20 +152,63 @@ export default function MapPage() {
   const FilterMenu = () => {
     const handleFilterClick = (period) => {
         const val = period.toLowerCase();
-        if (val === 'custom') onOpen();
-        else setFilter(val);
+        if (val === 'custom') {
+            onOpen(); // Open Modal
+        } else {
+            setFilter(val); // Set Standard Filter
+        }
     };
+    // Check if Custom is active (filter is an array)
     const isCustomActive = Array.isArray(filter);
 
     return (
-        <Box position="absolute" top="30px" right="20px" zIndex="10" bg="white" p="2" borderRadius="md" boxShadow="lg">
-           <HStack spacing="2">
-             {filterOptions.map((period) => {
+
+        <Box
+          position="absolute"
+          top="30px"
+          right="20px"
+          left="auto"
+          transform="none"
+          zIndex="10"
+          bg="white"
+          p="2"
+          borderRadius="md"
+          boxShadow="lg"
+          minW={{ base: "140px", md: "auto" }}
+        >
+
+        {/* --- MOBILE VIEW --- */}
+        <Box display={{ base: 'block', md: 'none' }}>
+            <HStack spacing={2}>
+                <Select 
+                    value={isCustomActive ? 'custom' : filter} 
+                    onChange={(e) => handleFilterClick(e.target.value)}
+                    size="sm"
+                >
+                    {filterOptions.map((period) => (
+                        <option key={period} value={period.toLowerCase()}>
+                            {period}
+                        </option>
+                    ))}
+                </Select>
+                {/* ADDED: Edit button triggers modal if Custom is already selected */}
+                {isCustomActive && (
+                    <Button size="sm" onClick={onOpen} colorScheme="blue" variant="solid" px={4}>
+                        Edit
+                    </Button>
+                )}
+            </HStack>
+        </Box>
+
+        {/* --- DESKTOP VIEW --- */}
+        <HStack spacing="2" display={{ base: 'none', md: 'flex' }}>
+            {filterOptions.map((period) => {
                 const val = period.toLowerCase();
                 const isActive = (filter === val) || (val === 'custom' && isCustomActive);
                 return (
                     <Button
-                        key={period} size="sm"
+                        key={period}
+                        size="sm"
                         bg={isActive ? "#053774" : "white"}
                         color={isActive ? "white" : "#5D5D5D"}
                         onClick={() => handleFilterClick(period)}
@@ -173,8 +216,8 @@ export default function MapPage() {
                         {period}
                     </Button>
                 )
-             })}
-           </HStack>
+            })}
+        </HStack>
         </Box>
     );
   };
