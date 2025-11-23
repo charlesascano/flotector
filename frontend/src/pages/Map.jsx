@@ -190,6 +190,67 @@ export default function MapPage() {
             <RangeDatepicker
             selectedDates={selectedDates}
             onDateChange={setSelectedDates}
+
+            propsConfigs={{
+                dateNavBtnProps: {
+                  padding: 0,
+                  fontWeight:'normal'
+                },
+
+                dayOfMonthBtnProps: {
+                  defaultBtnProps: {
+                    fontWeight: 'normal',
+                    _hover: {
+                      bgColor: '#648cbeff',
+                      color: 'white'
+                    }
+                  },
+                  selectedBtnProps: {
+                    bgColor: '#053774',
+                    color: 'white',
+                    _hover: {
+                      bgColor: '#053774'
+                    }
+                  },
+                  isInRangeBtnProps: {
+                    bgColor: '#d9eaffff',
+                    color: 'black !important'
+                  },
+                  todayBtnProps: {
+                    background: "#15A33D",
+                    fontWeight: 'bold'
+                  }
+                },
+                popoverCompProps: {
+                  popoverContentProps: {
+                    padding: {base: 0, md: 2},
+                    width: {base: '100vw', sm: '100%'}
+                  },
+                },
+                  calendarPanelProps: {
+                    wrapperProps: {
+                      width: '100%'
+                    },
+                    contentProps: {
+                      boxShadow: 'md',
+                    },
+                    dividerProps: {
+                      display: "none",
+                    },
+                  },
+
+                  dateHeadingProps: {
+                    letterSpacing: '1px',
+                  },
+
+                  weekdayLabelProps: {
+                    fontWeight: 'normal'
+                  },
+
+                  inputProps: {
+                    letterSpacing: '1px'
+                  },
+              }}
             />
         </ModalBody>
         <ModalFooter>
