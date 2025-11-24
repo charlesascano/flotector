@@ -3,6 +3,7 @@ import { ArrowBackIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import { Link as RouterLink, useParams, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import WasteCard from "../components/WasteCard";
+import DetectionLegend from "../components/ResultLegend";
 import Layout from '../components/Layout';
 import { FaLocationDot } from "react-icons/fa6";
 import { FaCalendar } from "react-icons/fa";
@@ -202,69 +203,6 @@ export default function Results({ isOverlay = false }) {
               {showDetections ? "Show Original" : "Show Detections" }
             </Button> 
           )}
-<Box
-  bg="white"
-  p={6}
-  mt={8}
-  w="100%"
-  rounded="xl"
-  boxShadow="0 4px 12px rgba(0,0,0,0.08)"
-  borderLeft="6px solid #15A33D"
->
-  <Heading
-    fontSize="xl"
-    color="#053774"
-    mb={4}
-    fontWeight="extrabold"
-    letterSpacing="wide"
-  >
-    Detection Legend
-  </Heading>
-
-  <Box
-    bg="gray.50"
-    p={4}
-    rounded="lg"
-    mb={4}
-    border="1px solid"
-    borderColor="gray.200"
-  >
-    <Text fontSize="sm" color="gray.700">
-      <b>Label + Score</b> (e.g., <i>"Plastic 0.47"</i>) — Indicates the detected waste
-      type followed by the model’s <b>confidence score</b> ranging from <b>0 to 1</b>.
-      Higher scores represent stronger certainty in the detection.
-    </Text>
-  </Box>
-
-  <Box
-    bg="gray.50"
-    p={4}
-    rounded="lg"
-    mb={4}
-    border="1px solid"
-    borderColor="gray.200"
-  >
-    <Text fontSize="sm" color="gray.700">
-      <b>Detection Count</b> (e.g., <i>"PLASTIC – 15"</i>) — Shows the <b>total number of
-      detected instances</b> for each waste type found in the image.
-    </Text>
-  </Box>
-
-  <Box
-    bg="gray.50"
-    p={4}
-    rounded="lg"
-    border="1px solid"
-    borderColor="gray.200"
-  >
-    <Text fontSize="sm" color="gray.700">
-      <b>Detection Output Image</b> — Visual representation of all recognized objects,
-      where each detection is labeled with its type and confidence score at the
-      corresponding location.
-    </Text>
-  </Box>
-</Box>
-
         </Box>
 
 
@@ -352,6 +290,8 @@ export default function Results({ isOverlay = false }) {
         </Box>
       </Flex>
 
+      <DetectionLegend/>
+      
       {/* If coming from Submit page: show buttons section */}
       <Flex mt={10} mb={10} justify="center" align="center"> 
         {isFromSubmit ? (
