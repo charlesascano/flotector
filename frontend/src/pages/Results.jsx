@@ -1,4 +1,4 @@
-import { Box, Icon, Flex, Text, Image, Heading, HStack, Button, SimpleGrid, Spinner, useToast, IconButton, Drawer, DrawerOverlay, DrawerContent, DrawerBody, color } from "@chakra-ui/react";
+import { Box, Icon, Flex, Text, Image, Heading, HStack, Button, SimpleGrid, Spinner, useToast, IconButton, Drawer, DrawerOverlay, DrawerContent, DrawerBody, useDisclosure } from "@chakra-ui/react";
 import { ArrowBackIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import { Link as RouterLink, useParams, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -13,6 +13,9 @@ export default function Results({ isOverlay = false }) {
   const { uuid } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const {isOpen: isModalOpen, 
+  onOpen: onModalOpen, 
+  onClose: onModalClose} = useDisclosure()
 
   const isFromSubmit = location.state?.from === 'submit'; // Check if user came from the submit page
   const hasHistory = location.key !== "default"; // Get navigation history (turns into overlay mode if navigated from other pages)
@@ -176,7 +179,7 @@ export default function Results({ isOverlay = false }) {
             Thanks for helping monitor our waters!
           </Text>
 
-          <Box mx="auto" mb={2} minH="200px" display="flex" alignItems="center" justifyContent="center">
+          <Box mx="auto" mb={2} minH="200px" display="flex" alignItems="center" justifyContent="center" position={'relative'}>
             {loading ? (
               <Spinner size="xl" color="#15A33D" mx="auto" />
             ) : (
@@ -191,6 +194,21 @@ export default function Results({ isOverlay = false }) {
                 onLoad={() => setImageLoaded(true)}
               />
             )}
+
+            { imageLoaded && <Button
+              position={"absolute"}
+              top={1}
+              right={1}
+              onClick={onModalOpen}
+              boxShadow={'lg'}
+              bgColor={'#053774'}
+              color={'white'}
+              size={'xs'}
+              _hover={{bgColor: '#4887d5ff'}}
+            >
+              ?
+            </Button>}
+
           </Box>
           { imageLoaded && (
             <Button 
@@ -289,8 +307,8 @@ export default function Results({ isOverlay = false }) {
           </Box>
         </Box>
       </Flex>
-
-      <DetectionLegend/>
+      <DetectionLegend onClose={onModalClose} isOpen={isModalOpen}/>
+      
       
       {/* If coming from Submit page: show buttons section */}
       <Flex mt={10} mb={10} justify="center" align="center"> 
